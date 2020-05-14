@@ -3,3 +3,8 @@
 .gradle
 /build/
 !gradle-wrapper.jar
+/data/
+/app/build/
+/categories-parser/build/
+/dataclass/build/
+/domain/build/
