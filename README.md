@@ -2,7 +2,7 @@
 
 [![](https://jitpack.io/v/omarmiatello/noexp.svg)](https://jitpack.io/#omarmiatello/noexp)
 
-**Library API version 0.1**
+**Library API version 0.2.0**
 
 This library has 1 modules:
 - Module [:dataclass:](#how-to-use-dataclass-module)
@@ -25,7 +25,7 @@ repositories {
 
 Grab via Gradle (v4 or later):
 ```groovy
-implementation 'com.github.omarmiatello.noexp:dataclass:0.1'
+implementation 'com.github.omarmiatello.noexp:dataclass:0.2.0'
 ```
 
 ### Example
