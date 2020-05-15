@@ -11,7 +11,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.squareup.okhttp3:okhttp:4.4.0")
     implementation(project(":categories-parser"))
-    implementation(project(":domain"))
+    api(project(":domain"))
 }
 
 tasks {

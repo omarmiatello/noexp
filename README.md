@@ -2,11 +2,15 @@
 
 [![](https://jitpack.io/v/omarmiatello/noexp.svg)](https://jitpack.io/#omarmiatello/noexp)
 
-**Library API version 0.2.0**
-
-This library has 1 modules:
+This library has 4 modules:
 - Module [:dataclass:](#how-to-use-dataclass-module)
-  - 92 `data class` with [Kotlinx/Serialization](https://github.com/Kotlin/kotlinx.serialization)
+  - `data class` with [Kotlinx/Serialization](https://github.com/Kotlin/kotlinx.serialization)
+- Module [:domain:]()
+  - TODO
+- Module [:categories-parser:]()
+  - TODO
+- Module [:app:]()
+  - TODO
 
 
 ## How to use `dataclass` module
@@ -25,7 +29,7 @@ repositories {
 
 Grab via Gradle (v4 or later):
 ```groovy
-implementation 'com.github.omarmiatello.noexp:dataclass:0.2.0'
+implementation 'com.github.omarmiatello.noexp:dataclass:0.2.1'
 ```
 
 ### Example
