@@ -1,5 +1,7 @@
 package com.github.omarmiatello.noexp
 
+import com.github.omarmiatello.noexp.utils.toCategoryDao
+
 fun NoExpDB.updateCategories(categories: List<Category>, forceUpdate: Boolean): NoExpDB {
     fun List<Category>.names() = map { it.name }
     fun List<Category>.parentNames() = flatMap { it.allParents }.distinct()
