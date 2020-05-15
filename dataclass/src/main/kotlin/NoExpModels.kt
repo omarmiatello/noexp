@@ -2,6 +2,10 @@ package com.github.omarmiatello.noexp
 
 import kotlinx.serialization.Serializable
 
+sealed class NoExpModel {
+    abstract fun toJson(): String
+}
+
 @Serializable
 data class Product(
     val name: String,
@@ -18,9 +22,15 @@ data class Product(
     val maxPerYear: Int? = null,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList()
-) {
+) : NoExpModel() {
     fun expireInDays(now: Long = System.currentTimeMillis()) = expireInDays(now, expireDate)
     fun expireFormatted(now: Long = System.currentTimeMillis()) = expireFormatted(now, expireDate)
+
+    override fun toJson() = json.stringify(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.parse(serializer(), string)
+    }
 }
 
 @Serializable
@@ -35,7 +45,13 @@ data class Category(
     val max: Int? = null,
     val maxPerWeek: Int? = null,
     val maxPerYear: Int? = null
-) : Comparable<Category> {
+) : NoExpModel(), Comparable<Category> {
     private val sortKey get() = allParents.joinToString("") + name
     override fun compareTo(other: Category): Int = sortKey.compareTo(other.sortKey)
+
+    override fun toJson() = json.stringify(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.parse(serializer(), string)
+    }
 }

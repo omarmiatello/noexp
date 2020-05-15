@@ -1,11 +1,7 @@
 package com.github.omarmiatello.noexp
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
-private val json =
-    Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, prettyPrint = true, encodeDefaults = false))
 
 @Serializable
 data class NoExpDB(

@@ -1,6 +1,6 @@
 package com.github.omarmiatello.noexp
 
-fun productsByCategories(categories: List<Category>, products: List<Product>) = buildString {
+fun productsInHome(categories: List<Category>, products: List<Product>) = buildString {
     val categoryNameToFirstProduct = categories.mapNotNull { cat ->
         val firstProduct = products.firstOrNull { cat == it.cat.first() || cat.name in it.cat.first().allParents }
         firstProduct?.let { cat.name to firstProduct }

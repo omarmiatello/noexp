@@ -3,7 +3,7 @@ package com.github.omarmiatello.noexp
 
 fun main() {
     val categories = cache("parsed-categories.json", forceUpdate = true) {
-        parseNoExpCategories(categoriesFile)
+        NoExpCategoriesParser.parseAndRefactor(categoriesFile)
     }
 
     val noexp = cache("noexp.json", forceUpdate = false) {
@@ -16,6 +16,6 @@ fun main() {
     val products = noexp.home.orEmpty().values.map { it.toProduct(categories.associateBy { it.name }) }
 
     cacheText("productsInHome.txt", forceUpdate = true) {
-        productsByCategories(categories, products.sortedBy { it.expireDate })
+        productsInHome(categories, products.sortedBy { it.expireDate })
     }
 }

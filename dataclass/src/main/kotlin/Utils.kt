@@ -1,6 +1,16 @@
 package com.github.omarmiatello.noexp
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import kotlin.math.abs
+
+internal val json = Json(
+    JsonConfiguration.Stable.copy(
+        ignoreUnknownKeys = true,
+        prettyPrint = true,
+        encodeDefaults = false
+    )
+)
 
 fun expireInDays(now: Long, expireDate: Long) = (expireDate - now) / (1000 * 60 * 60 * 24)
 
