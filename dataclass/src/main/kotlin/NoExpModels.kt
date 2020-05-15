@@ -1,5 +1,7 @@
 package com.github.omarmiatello.noexp
 
+import com.github.omarmiatello.noexp.utils.DateUtils
+import com.github.omarmiatello.noexp.utils.json
 import kotlinx.serialization.Serializable
 
 sealed class NoExpModel {
@@ -23,8 +25,9 @@ data class Product(
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList()
 ) : NoExpModel() {
-    fun expireInDays(now: Long = System.currentTimeMillis()) = expireInDays(now, expireDate)
-    fun expireFormatted(now: Long = System.currentTimeMillis()) = expireFormatted(now, expireDate)
+    fun expireInDays(now: Long = System.currentTimeMillis()) = DateUtils.millisToDays(expireDate, now)
+
+    fun expireFormatted(now: Long = System.currentTimeMillis()) = DateUtils.formatRelativeShort(expireDate, now)
 
     override fun toJson() = json.stringify(serializer(), this)
 
@@ -47,6 +50,7 @@ data class Category(
     val maxPerYear: Int? = null
 ) : NoExpModel(), Comparable<Category> {
     private val sortKey get() = allParents.joinToString("") + name
+
     override fun compareTo(other: Category): Int = sortKey.compareTo(other.sortKey)
 
     override fun toJson() = json.stringify(serializer(), this)

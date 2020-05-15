@@ -1,25 +1,10 @@
-package com.github.omarmiatello.noexp
+package com.github.omarmiatello.noexp.utils
 
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlin.math.abs
+import com.github.omarmiatello.noexp.Category
+import com.github.omarmiatello.noexp.NoExpDB
+import com.github.omarmiatello.noexp.NoExpDBModel
+import com.github.omarmiatello.noexp.Product
 
-internal val json = Json(
-    JsonConfiguration.Stable.copy(
-        ignoreUnknownKeys = true,
-        prettyPrint = true,
-        encodeDefaults = false
-    )
-)
-
-fun expireInDays(now: Long, expireDate: Long) = (expireDate - now) / (1000 * 60 * 60 * 24)
-
-fun expireFormatted(now: Long, expireDate: Long): String {
-    val h = ((expireDate - now) / (1000 * 60 * 60)).also { if (abs(it) < 36) return "${it}h" }
-    val d = (h / 24).also { if (abs(it) < 45) return "${it}d" }
-    val m = (d / 30).also { if (abs(it) < 13) return "${it}M" }
-    return "${m / 12}y"
-}
 
 // DB -> App models
 

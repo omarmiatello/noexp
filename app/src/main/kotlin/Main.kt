@@ -1,5 +1,7 @@
 package com.github.omarmiatello.noexp
 
+import com.github.omarmiatello.noexp.utils.toProduct
+
 
 fun main() {
     val categories = cache("parsed-categories.json", forceUpdate = true) {
