@@ -46,6 +46,23 @@ fun NoExpDBModel.CategoryDao.toCategory() = Category(
 
 // App models -> DB
 
+fun Product.toProductDao() = NoExpDBModel.ProductDao(
+    name = name,
+    description = description,
+    pictureUrl = pictureUrl,
+    barcode = barcode,
+    qr = qr,
+    insertDate = insertDate,
+    expireDate = expireDate,
+    min = min,
+    desired = desired,
+    max = max,
+    maxPerWeek = maxPerWeek,
+    maxPerYear = maxPerYear,
+    cat = cat.map { it.name }.takeIf { it.isNotEmpty() },
+    catParents = catParents.map { it.name }.takeIf { it.isNotEmpty() }
+)
+
 fun Product.toBarcodeDao() = NoExpDBModel.BarcodeDao(
     name = name,
     description = description,
