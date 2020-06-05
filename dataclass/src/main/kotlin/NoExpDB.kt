@@ -40,6 +40,23 @@ sealed class NoExpDBModel {
     ) : NoExpDBModel() {
         override fun toJson() = json.stringify(serializer(), this)
 
+        fun toMap() = mapOf(
+            "name" to name,
+            "description" to description,
+            "pictureUrl" to pictureUrl,
+            "barcode" to barcode,
+            "qr" to qr,
+            "insertDate" to insertDate,
+            "expireDate" to expireDate,
+            "min" to min,
+            "desired" to desired,
+            "max" to max,
+            "maxPerWeek" to maxPerWeek,
+            "maxPerYear" to maxPerYear,
+            "cat" to cat,
+            "catParents" to catParents
+        )
+
         companion object {
             fun fromJson(string: kotlin.String) = json.parse(serializer(), string)
         }
