@@ -1,4 +1,4 @@
-package com.github.omarmiatello.noexp
+package com.github.omarmiatello.noexp.utils
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -1,6 +1,8 @@
-package com.github.omarmiatello.noexp
+package com.github.omarmiatello.noexp.utils
 
-import com.github.omarmiatello.noexp.utils.toCategoryDao
+import com.github.omarmiatello.noexp.Category
+import com.github.omarmiatello.noexp.NoExpDB
+import com.github.omarmiatello.noexp.extractCategories
 
 fun NoExpDB.updateCategories(categories: List<Category>, forceUpdate: Boolean): NoExpDB {
     val categoryFood = categories.first()
@@ -24,23 +26,7 @@ fun NoExpDB.updateCategories(categories: List<Category>, forceUpdate: Boolean): 
     )
 }
 
-fun String.extractCategories(categories: List<Category>, itemIfEmpty: Category? = null): List<Category> {
-    fun findPosition(string: String, category: Category): Pair<Int, Category>? {
-        var idx: Int
-        idx = string.indexOf(" ${category.name} ", ignoreCase = true)
-        if (idx >= 0) return idx to category
-        category.alias.forEach {
-            idx = string.indexOf(" $it ", ignoreCase = true)
-            if (idx >= 0) return idx to category
-        }
-        return null
-    }
 
-    val sorted = categories.mapNotNull { category -> findPosition(" $this ", category) }.sortedByDescending { it.second.name }.sortedBy { it.first }.map { it.second }
-    val parents = sorted.flatMap { it.allParents }
-    return sorted.filter { it.name !in parents }
-        .ifEmpty { if (itemIfEmpty != null) listOf(itemIfEmpty) else emptyList() }
-}
 
 fun List<Category>.toCatNames() = map { it.name }
 

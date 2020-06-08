@@ -9,7 +9,9 @@ data class NoExpDB(
     val barcode: Map<String, BarcodeDao>? = null,
     val home: Map<String, ProductDao>? = null,
     val lastQr: String? = null,
-    val category: Map<String, CategoryDao>? = null
+    val category: Map<String, CategoryDao>? = null,
+    val expireDateByCategory: Map<String, Int>? = null,
+    val expireDateByBarcode: Map<String, Int>? = null
 ) : NoExpDBModel() {
     override fun toJson() = json.stringify(serializer(), this)
 

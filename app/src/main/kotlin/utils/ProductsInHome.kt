@@ -1,4 +1,7 @@
-package com.github.omarmiatello.noexp
+package com.github.omarmiatello.noexp.utils
+
+import com.github.omarmiatello.noexp.Category
+import com.github.omarmiatello.noexp.Product
 
 fun productsInHome(categories: List<Category>, products: List<Product>) = buildString {
     val categoryNameToFirstProduct = categories.mapNotNull { cat ->
@@ -6,11 +9,12 @@ fun productsInHome(categories: List<Category>, products: List<Product>) = buildS
         firstProduct?.let { cat.name to firstProduct }
     }.toMap()
     val maxExpire = products.map { it.expireDate }.max()
-    val visibleCategories = cache("visible-categories.json", forceUpdate = true) {
-        categories.filter { cat ->
-            products.firstOrNull { cat == it.cat.first() || cat.name in it.cat.first().allParents } != null
+    val visibleCategories =
+        cache("visible-categories.json", forceUpdate = true) {
+            categories.filter { cat ->
+                products.firstOrNull { cat == it.cat.first() || cat.name in it.cat.first().allParents } != null
+            }
         }
-    }
 
     visibleCategories
         .sortedBy { cat ->
