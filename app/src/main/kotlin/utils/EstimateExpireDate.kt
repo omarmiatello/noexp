@@ -4,6 +4,7 @@ import com.github.omarmiatello.noexp.Category
 import com.github.omarmiatello.noexp.NoExpDB
 import com.github.omarmiatello.noexp.NoExpDBModel
 import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 fun NoExpDB.updateEstimation(
     categories: List<Category>
@@ -28,7 +29,7 @@ fun estimateCategoryExpireDate(
     barcode: Map<String, NoExpDBModel.BarcodeDao>,
     productList: List<NoExpDBModel.ProductDao>,
     archiveList: List<NoExpDBModel.ArchivedDao>
-): Map<String, Int> {
+): Map<String, Long> {
     return categoryDays(barcode, productList, archiveList).flatMap { (k, v) ->
         categories.first { it.name == k }.allParents.map { it to v } + (k to v)
     }
@@ -37,7 +38,7 @@ fun estimateCategoryExpireDate(
             val expireDates = it.value.flatten()
             val excluded = (expireDates.size * 0.1).roundToInt()
             val expireDatesFiltered = if (expireDates.size > 5) expireDates.drop(excluded).dropLast(excluded) else expireDates
-            expireDatesFiltered.average().roundToInt()
+            expireDatesFiltered.average().roundToLong()
         }
 }
 
@@ -45,7 +46,7 @@ fun estimateBarcodeExpireDate(
     barcode: Map<String, NoExpDBModel.BarcodeDao>,
     productList: List<NoExpDBModel.ProductDao>,
     archiveList: List<NoExpDBModel.ArchivedDao>
-): Map<String, Int> {
+): Map<String, Long> {
     val productCategoryDays = productList
         .mapNotNull {
             if (it.barcode == null) return@mapNotNull null
@@ -60,7 +61,7 @@ fun estimateBarcodeExpireDate(
         }
     return (productCategoryDays + archiveCategoryDays)
         .groupBy({ it.first }) { it.second }
-        .mapValues { it.value.average().roundToInt() }
+        .mapValues { it.value.average().roundToLong() }
 }
 
 private fun categoryDays(
