@@ -10,7 +10,7 @@ fun main() {
 
     val categories =
         cache("parsed-categories.json", forceUpdate = true) {
-            NoExpCategoriesParser.parseAndRefactor(categoriesFile)
+            NoExpCategoriesParser.parse(categoriesFile)
         }
 
     val noexp = cache("noexp.json", forceUpdate = isProduction) {
@@ -24,6 +24,8 @@ fun main() {
     }
 
     val products = noexp.home.orEmpty().values.map { it.toProduct(categories.associateBy { it.name }) }
+
+    NoExpCategoriesParser.save(categoriesFile, categories, products)
 
     cacheText("productsInHome.txt", forceUpdate = true) {
         productsInHome(

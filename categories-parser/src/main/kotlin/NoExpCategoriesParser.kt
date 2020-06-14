@@ -1,6 +1,7 @@
 package com.github.omarmiatello.noexp
 
 import java.io.File
+import java.util.*
 
 object NoExpCategoriesParser {
     fun parse(file: File): List<Category> {
@@ -24,11 +25,17 @@ object NoExpCategoriesParser {
                 directParent = parents.lastOrNull(),
                 allParents = parents,
                 directChildren = children[line.name].orEmpty(),
-                min = line.min,
-                desired = line.desired,
-                max = line.max,
-                maxPerWeek = line.maxPerWeek,
-                maxPerYear = line.maxPerYear
+                quantity = line.run {
+                    if (min != null || desired != null || max != null || maxPerWeek != null || maxPerYear != null) {
+                        Quantity(
+                            min = min,
+                            desired = desired,
+                            max = max,
+                            maxPerWeek = maxPerWeek,
+                            maxPerYear = maxPerYear
+                        )
+                    } else null
+                }
             )
         }.sorted()
         val categoryDuplicated = categories.flatMap { it.alias + it.name }.groupBy { it }.filterValues { it.size > 1 }.keys
@@ -36,9 +43,7 @@ object NoExpCategoriesParser {
         return categories
     }
 
-    fun save(file: File, categories: List<Category>) = file.writeText(categories.toFormattedString())
-
-    fun parseAndRefactor(file: File) = parse(file).also { save(file, it) }
+    fun save(file: File, categories: List<Category>, products: List<Product>) = file.writeText(categories.toFormattedString(products))
 
     private fun String.toCategoryLine(): CategoryLine {
         val tabsCount = takeWhile { !it.isLetter() }.let { nonLetter ->
@@ -46,7 +51,7 @@ object NoExpCategoriesParser {
             nonLetter.count() - space + (space / 4)
         }
         if (tabsCount > 10) error("Are you sure? Seems too depth ($tabsCount tabs)")
-        val (name, quantity, week, year, alias) = split("|").map { it.trim() }
+        val (name, current, quantity, week, year, alias) = split("|").map { it.trim() }
         val (min, desired, max) = quantity.split(" ").map { it.toInt().takeIf { it != 0 } }
         return CategoryLine(
             indent = tabsCount,
@@ -56,22 +61,36 @@ object NoExpCategoriesParser {
             desired = desired,
             max = max,
             maxPerWeek = week.toIntOrNull(),
-            maxPerYear = year.toIntOrNull()
+            maxPerYear = year.toIntOrNull(),
+            current = current.toIntOrNull() ?: 0
         )
     }
 
-    private fun List<Category>.toFormattedString() = "${"--==[ Categories ]==--".padEnd(40)} | quantity | week | year | alias\n" + joinToString("\n") {
+    private fun List<Category>.toFormattedString(products: List<Product>) = "${"--==[ Categories ]==--".padEnd(40)} | current | quantity | week | year | alias\n" + joinToString("\n") { category ->
         buildString {
-            append(it.allParents.joinToString("") { "\t" })
-            append(it.name.padEnd(40 - (it.allParents.size * 4)))
-            append(" | ${it.min ?: 0} ${it.desired ?: 0} ${it.max ?: 0}".padEnd(11))
-            append(" | ${if (it.maxPerWeek ?: 0 > 0) it.maxPerWeek else ""}".padEnd(7))
-            append(" | ${if (it.maxPerYear ?: 0 > 0) it.maxPerYear else ""}".padEnd(7))
-            append(" | ${it.alias.joinToString()}")
+            append(category.allParents.joinToString("") { "\t" })
+            append(category.name.padEnd(40 - (category.allParents.size * 4)))
+            append(" | ${products.count { it.cat.first().let { cat -> category.name == cat.name || category.name in cat.allParents } }}".padEnd(10))
+            append(" | ${category.quantity?.min ?: 0} ${category.quantity?.desired ?: 0} ${category.quantity?.max ?: 0}".padEnd(11))
+            append(" | ${if (category.quantity?.maxPerWeek ?: 0 > 0) category.quantity?.maxPerWeek else ""}".padEnd(7))
+            append(" | ${if (category.quantity?.maxPerYear ?: 0 > 0) category.quantity?.maxPerYear else ""}".padEnd(7))
+            append(" | ${category.alias.joinToString()}")
         }
     }
 
-    private class CategoryLine(val indent: Int, val name: String, val alias: List<String>, val min: Int?, val desired: Int?, val max: Int?, val maxPerWeek: Int?, val maxPerYear: Int?)
+    private operator fun <E> List<E>.component6() = get(5)
+
+    private class CategoryLine(
+        val indent: Int,
+        val name: String,
+        val alias: List<String>,
+        val min: Int?,
+        val desired: Int?,
+        val max: Int?,
+        val maxPerWeek: Int?,
+        val maxPerYear: Int?,
+        val current: Int
+    )
 }
 
 fun String.extractCategories(categories: List<Category>, itemIfEmpty: Category? = null): List<Category> {

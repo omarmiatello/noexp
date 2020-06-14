@@ -3,9 +3,29 @@ package com.github.omarmiatello.noexp
 import com.github.omarmiatello.noexp.utils.DateUtils
 import com.github.omarmiatello.noexp.utils.json
 import kotlinx.serialization.Serializable
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 sealed class NoExpModel {
     abstract fun toJson(): String
+}
+
+@Serializable
+data class Quantity(
+    val min: Int? = null,
+    val desired: Int? = null,
+    val max: Int? = null,
+    val maxPerWeek: Int? = null,
+    val maxPerYear: Int? = null
+) : NoExpModel() {
+    val maxPerDay: Double? = max((maxPerWeek ?: 0) / 7.0, (maxPerYear ?: 0) / 365.0).takeIf { it != 0.0 }
+    val minDaysForConsume = maxPerDay?.let { (1 / it).roundToInt() }
+
+    override fun toJson() = json.stringify(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.parse(serializer(), string)
+    }
 }
 
 @Serializable
@@ -17,11 +37,7 @@ data class Product(
     val qr: String,
     val insertDate: Long,
     val expireDate: Long,
-    val min: Int? = null,
-    val desired: Int? = null,
-    val max: Int? = null,
-    val maxPerWeek: Int? = null,
-    val maxPerYear: Int? = null,
+    val quantity: Quantity? = null,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList()
 ) : NoExpModel() {
@@ -43,11 +59,7 @@ data class Category(
     val directParent: String? = null,
     val allParents: List<String> = emptyList(),
     val directChildren: List<String> = emptyList(),
-    val min: Int? = null,
-    val desired: Int? = null,
-    val max: Int? = null,
-    val maxPerWeek: Int? = null,
-    val maxPerYear: Int? = null
+    val quantity: Quantity?
 ) : NoExpModel(), Comparable<Category> {
     private val sortKey get() = allParents.joinToString("") + name
 

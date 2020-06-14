@@ -4,44 +4,27 @@ import com.github.omarmiatello.noexp.Category
 import com.github.omarmiatello.noexp.Product
 
 fun productsInHome(categories: List<Category>, products: List<Product>) = buildString {
-    val categoryNameToFirstProduct = categories.mapNotNull { cat ->
-        val firstProduct = products.firstOrNull { cat == it.cat.first() || cat.name in it.cat.first().allParents }
-        firstProduct?.let { cat.name to firstProduct }
-    }.toMap()
-    val maxExpire = products.map { it.expireDate }.max()
-    val visibleCategories =
-        cache("visible-categories.json", forceUpdate = true) {
-            categories.filter { cat ->
-                products.firstOrNull { cat == it.cat.first() || cat.name in it.cat.first().allParents } != null
-            }
-        }
-
-    visibleCategories
-        .sortedBy { cat ->
-            fun String.expireDate(): String = (categoryNameToFirstProduct[this]?.expireDate
-                ?: maxExpire).toString().padStart(20, '0')
-            (cat.allParents + cat.name).joinToString("") { it.expireDate() + it }
-        }
-        .forEach { cat ->
-            val (prodsCat, prodsParent) = products.filter { cat in it.cat || cat in it.catParents }
-                .partition { cat == it.cat.first() }
-            if (prodsCat.isNotEmpty() || prodsParent.isNotEmpty()) {
-                val tab = cat.allParents.joinToString("") { "\t" }
-                append("$tab${cat.name} [${prodsCat.size}/${prodsCat.size + prodsParent.size}]")
-                if (prodsCat.isNotEmpty()) {
-                    append(" (${prodsCat.expiresFormatted()})")
-                    val tab2 = (cat.allParents + "").joinToString("") { "\t" }
-                    prodsCat.groupBy { it.name }.forEach { (_, prods) ->
-                        appendln()
-                        append("$tab2 ${prods.size}x ${prods.first().name} (${prods.expiresFormatted()})")
-                    }
+    categories
+        .withProducts(products, categoryWithNoProducts = false)
+        .forEach { categoryProducts ->
+            val (category, productsInCategory, productsInChildren) = categoryProducts
+            val tab = category.allParents.joinToString("") { "\t" }
+            append("$tab${category.name} [${productsInCategory.size}/${productsInCategory.size + productsInChildren.size}]")
+            val checkQuantity = categoryProducts.toCheckQuantity()
+            if (checkQuantity.min != null) append(" | Quantity: Meno di min:${checkQuantity.min}")
+            if (checkQuantity.desired != null) append(" | Quantity: Meno di desired:${checkQuantity.desired}")
+            if (checkQuantity.max != null) append(" | Quantity: Più di max:${checkQuantity.max}")
+            if (checkQuantity.productsDaysForConsume.isNotEmpty()) append(" | Quantity: daysForConsume :${checkQuantity.productsDaysForConsume.map {
+                "${it.product.name}[${it.productsLeft} in ${it.daysLeft} days < 1 product each ${it.minDaysForConsume} day] "
+            }}")
+            if (productsInCategory.isNotEmpty()) {
+                append(" (${productsInCategory.expiresFormatted()})")
+                val tab2 = (category.allParents + "").joinToString("") { "\t" }
+                productsInCategory.groupBy { it.name }.forEach { (_, prods) ->
+                    appendln()
+                    append("$tab2 ${prods.size}x ${prods.first().name} (${prods.expiresFormatted()})")
                 }
-                appendln()
             }
+            appendln()
         }
 }
-
-private fun List<Product>.expiresFormatted() = map { it.expireFormatted() }
-    .groupBy { it }
-    .toList()
-    .joinToString { if (it.second.size == 1) it.first else "${it.second.size}x ${it.first}" }

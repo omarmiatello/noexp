@@ -5,6 +5,8 @@
 This library has 3 modules:
 - Module `:dataclass:`
   - `data class` with [Kotlinx/Serialization](https://github.com/Kotlin/kotlinx.serialization)
+  - Model converter
+  - Model collection utility
 - Module `:categories-parser:`
   - Parse and refactor `categories.txt`
 - Module `:app:`
@@ -28,13 +30,13 @@ repositories {
 Grab via Gradle (v4 or later):
 ```groovy
 // `data class` with Kotlinx/Serialization
-implementation 'com.github.omarmiatello.noexp:dataclass:0.2.9'
+implementation 'com.github.omarmiatello.noexp:dataclass:0.3.0'
 
 // Parse and refactor `categories.txt`
-implementation 'com.github.omarmiatello.noexp:categories-parser:0.2.9'
+implementation 'com.github.omarmiatello.noexp:categories-parser:0.3.0'
 
 // `DB.updateCategories()`, `productsInHome()`
-implementation 'com.github.omarmiatello.noexp:app:0.2.9'
+implementation 'com.github.omarmiatello.noexp:app:0.3.0'
 ```
 
 ### Example
