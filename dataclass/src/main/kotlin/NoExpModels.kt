@@ -59,7 +59,7 @@ data class Category(
     val directParent: String? = null,
     val allParents: List<String> = emptyList(),
     val directChildren: List<String> = emptyList(),
-    val quantity: Quantity?
+    val quantity: Quantity? = null
 ) : NoExpModel(), Comparable<Category> {
     private val sortKey get() = allParents.joinToString("") + name
 

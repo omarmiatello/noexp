@@ -23,3 +23,23 @@ fun List<Category>.withProducts(products: List<Product>, categoryWithNoProducts:
 fun List<Category>.filterWithProducts(products: List<Product>): List<Category> = filter { cat ->
     products.firstOrNull { cat == it.cat.first() || cat.name in it.cat.first().allParents } != null
 }
+
+fun String.extractCategories(categories: List<Category>, itemIfEmpty: Category? = null): List<Category> {
+    fun findPosition(string: String, category: Category): Pair<Int, Category>? {
+        var idx: Int
+        idx = string.indexOf(" ${category.name} ", ignoreCase = true)
+        if (idx >= 0) return idx to category
+        category.alias.forEach {
+            idx = string.indexOf(" $it ", ignoreCase = true)
+            if (idx >= 0) return idx to category
+        }
+        return null
+    }
+
+    val sorted =
+        categories.mapNotNull { category -> findPosition(" $this ", category) }.sortedByDescending { it.second.name }
+            .sortedBy { it.first }.map { it.second }
+    val parents = sorted.flatMap { it.allParents }
+    return sorted.filter { it.name !in parents }
+        .ifEmpty { if (itemIfEmpty != null) listOf(itemIfEmpty) else emptyList() }
+}

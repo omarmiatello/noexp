@@ -1,7 +1,6 @@
 package com.github.omarmiatello.noexp
 
 import java.io.File
-import java.util.*
 
 object NoExpCategoriesParser {
     fun parse(file: File): List<Category> {
@@ -38,12 +37,14 @@ object NoExpCategoriesParser {
                 }
             )
         }.sorted()
-        val categoryDuplicated = categories.flatMap { it.alias + it.name }.groupBy { it }.filterValues { it.size > 1 }.keys
+        val categoryDuplicated =
+            categories.flatMap { it.alias + it.name }.groupBy { it }.filterValues { it.size > 1 }.keys
         if (categoryDuplicated.isNotEmpty()) error("There are some categories duplicated: ${categoryDuplicated.joinToString()}")
         return categories
     }
 
-    fun save(file: File, categories: List<Category>, products: List<Product>) = file.writeText(categories.toFormattedString(products))
+    fun save(file: File, categories: List<Category>, products: List<Product>) =
+        file.writeText(categories.toFormattedString(products))
 
     private fun String.toCategoryLine(): CategoryLine {
         val tabsCount = takeWhile { !it.isLetter() }.let { nonLetter ->
@@ -66,17 +67,32 @@ object NoExpCategoriesParser {
         )
     }
 
-    private fun List<Category>.toFormattedString(products: List<Product>) = "${"--==[ Categories ]==--".padEnd(40)} | current | quantity | week | year | alias\n" + joinToString("\n") { category ->
-        buildString {
-            append(category.allParents.joinToString("") { "\t" })
-            append(category.name.padEnd(40 - (category.allParents.size * 4)))
-            append(" | ${products.count { it.cat.first().let { cat -> category.name == cat.name || category.name in cat.allParents } }}".padEnd(10))
-            append(" | ${category.quantity?.min ?: 0} ${category.quantity?.desired ?: 0} ${category.quantity?.max ?: 0}".padEnd(11))
-            append(" | ${if (category.quantity?.maxPerWeek ?: 0 > 0) category.quantity?.maxPerWeek else ""}".padEnd(7))
-            append(" | ${if (category.quantity?.maxPerYear ?: 0 > 0) category.quantity?.maxPerYear else ""}".padEnd(7))
-            append(" | ${category.alias.joinToString()}")
+    private fun List<Category>.toFormattedString(products: List<Product>) =
+        "${"--==[ Categories ]==--".padEnd(40)} | current | quantity | week | year | alias\n" + joinToString("\n") { category ->
+            buildString {
+                append(category.allParents.joinToString("") { "\t" })
+                append(category.name.padEnd(40 - (category.allParents.size * 4)))
+                append(" | ${products.count {
+                    it.cat.first().let { cat -> category.name == cat.name || category.name in cat.allParents }
+                }}".padEnd(10))
+                append(
+                    " | ${category.quantity?.min ?: 0} ${category.quantity?.desired ?: 0} ${category.quantity?.max ?: 0}".padEnd(
+                        11
+                    )
+                )
+                append(
+                    " | ${if (category.quantity?.maxPerWeek ?: 0 > 0) category.quantity?.maxPerWeek else ""}".padEnd(
+                        7
+                    )
+                )
+                append(
+                    " | ${if (category.quantity?.maxPerYear ?: 0 > 0) category.quantity?.maxPerYear else ""}".padEnd(
+                        7
+                    )
+                )
+                append(" | ${category.alias.joinToString()}")
+            }
         }
-    }
 
     private operator fun <E> List<E>.component6() = get(5)
 
@@ -91,22 +107,4 @@ object NoExpCategoriesParser {
         val maxPerYear: Int?,
         val current: Int
     )
-}
-
-fun String.extractCategories(categories: List<Category>, itemIfEmpty: Category? = null): List<Category> {
-    fun findPosition(string: String, category: Category): Pair<Int, Category>? {
-        var idx: Int
-        idx = string.indexOf(" ${category.name} ", ignoreCase = true)
-        if (idx >= 0) return idx to category
-        category.alias.forEach {
-            idx = string.indexOf(" $it ", ignoreCase = true)
-            if (idx >= 0) return idx to category
-        }
-        return null
-    }
-
-    val sorted = categories.mapNotNull { category -> findPosition(" $this ", category) }.sortedByDescending { it.second.name }.sortedBy { it.first }.map { it.second }
-    val parents = sorted.flatMap { it.allParents }
-    return sorted.filter { it.name !in parents }
-        .ifEmpty { if (itemIfEmpty != null) listOf(itemIfEmpty) else emptyList() }
 }

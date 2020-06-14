@@ -65,12 +65,13 @@ fun mapOfEstimateExpireDateByBarcode(
         .mapValues { it.value.average().roundToLong() }
 }
 
-fun NoExpDB.mapOfEstimateExpireDateByCategory(categories: List<Category> = category!!.values.map { it.toCategory() }) = mapOfEstimateExpireDateByCategory(
-    categories,
-    barcode!!,
-    home!!.values.toList(),
-    archive!!.values.flatMap { it.values }
-)
+fun NoExpDB.mapOfEstimateExpireDateByCategory(categories: List<Category> = category!!.values.map { it.toCategory() }) =
+    mapOfEstimateExpireDateByCategory(
+        categories,
+        barcode!!,
+        home!!.values.toList(),
+        archive!!.values.flatMap { it.values }
+    )
 
 fun NoExpDB.mapOfEstimateExpireDateByBarcode() = mapOfEstimateExpireDateByBarcode(
     productList = home!!.values.toList(),
