@@ -5,7 +5,7 @@ import com.github.omarmiatello.noexp.Product
 
 fun productsInHome(categories: List<Category>, products: List<Product>) = buildString {
     categories
-        .withProducts(products, categoryWithNoProducts = false)
+        .withProducts(products, categoryWithNoProducts = true)
         .forEach { categoryProducts ->
             val (category, productsInCategory, productsInChildren) = categoryProducts
             val tab = category.allParents.joinToString("") { "\t" }

@@ -25,7 +25,8 @@ fun NoExpDB.updateDB(categories: List<Category>, forceUpdate: Boolean) = copy(
             )
         } else it.value
     },
-    category = categories.map { it.name to it.toCategoryDao() }.toMap(),
+    category = categories.map { it.name to it.toCategoryDao() }.toMap()
+).copy(
     expireDateByCategory = mapOfEstimateExpireDateByCategory(categories),
     expireDateByBarcode = mapOfEstimateExpireDateByBarcode()
 )
