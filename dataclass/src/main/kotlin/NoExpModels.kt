@@ -37,6 +37,7 @@ data class Product(
     val qr: String,
     val insertDate: Long,
     val expireDate: Long,
+    val lastCheckDate: Long,
     val quantity: Quantity? = null,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList()
