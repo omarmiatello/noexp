@@ -30,13 +30,13 @@ repositories {
 Grab via Gradle (v4 or later):
 ```groovy
 // `data class` with Kotlinx/Serialization
-implementation 'com.github.omarmiatello.noexp:dataclass:0.3.2'
+implementation 'com.github.omarmiatello.noexp:dataclass:0.3.3'
 
 // Parse and refactor `categories.txt`
-implementation 'com.github.omarmiatello.noexp:categories-parser:0.3.2'
+implementation 'com.github.omarmiatello.noexp:categories-parser:0.3.3'
 
 // `DB.updateCategories()`, `productsInHome()`
-implementation 'com.github.omarmiatello.noexp:app:0.3.2'
+implementation 'com.github.omarmiatello.noexp:app:0.3.3'
 ```
 
 ### Example

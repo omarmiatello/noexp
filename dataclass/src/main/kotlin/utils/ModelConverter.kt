@@ -21,7 +21,8 @@ fun NoExpDBModel.ProductDao.toProduct(categoriesMap: Map<String, Category>) = Pr
     lastCheckDate = lastCheckDate ?: insertDate,
     quantity = toQuantityOrNull(),
     cat = cat.orEmpty().map { categoriesMap.getValue(it) },
-    catParents = catParents.orEmpty().map { categoriesMap.getValue(it) }
+    catParents = catParents.orEmpty().map { categoriesMap.getValue(it) },
+    position = position
 )
 
 fun NoExpDBModel.ProductDao.toQuantityOrNull() =
@@ -72,7 +73,8 @@ fun Product.toProductDao() = NoExpDBModel.ProductDao(
     maxPerWeek = quantity?.maxPerWeek,
     maxPerYear = quantity?.maxPerYear,
     cat = cat.map { it.name }.takeIf { it.isNotEmpty() },
-    catParents = catParents.map { it.name }.takeIf { it.isNotEmpty() }
+    catParents = catParents.map { it.name }.takeIf { it.isNotEmpty() },
+    position = position
 )
 
 fun Product.toBarcodeDao() = NoExpDBModel.BarcodeDao(

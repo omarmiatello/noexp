@@ -39,7 +39,8 @@ sealed class NoExpDBModel {
         val maxPerWeek: Int? = null,
         val maxPerYear: Int? = null,
         val cat: List<String>? = null,
-        val catParents: List<String>? = null
+        val catParents: List<String>? = null,
+        val position: String? = null
     ) : NoExpDBModel() {
         override fun toJson() = json.stringify(serializer(), this)
 
@@ -58,7 +59,8 @@ sealed class NoExpDBModel {
             "maxPerWeek" to maxPerWeek,
             "maxPerYear" to maxPerYear,
             "cat" to cat,
-            "catParents" to catParents
+            "catParents" to catParents,
+            "position" to position
         )
 
         companion object {

@@ -40,7 +40,8 @@ data class Product(
     val lastCheckDate: Long,
     val quantity: Quantity? = null,
     val cat: List<Category> = emptyList(),
-    val catParents: List<Category> = emptyList()
+    val catParents: List<Category> = emptyList(),
+    val position: String? = null
 ) : NoExpModel() {
     fun expireInDays(now: Long = System.currentTimeMillis()) = DateUtils.millisToDays(expireDate, now)
 
