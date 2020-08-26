@@ -14,7 +14,7 @@ fun mapOfEstimateExpireDateByCategory(
 ): Map<String, Long> {
     val productCategoryDays = productList
         .mapNotNull {
-            val category = it.cat!!.first()
+            val category = it.cat?.first() ?: error("Category missing: $it")
             val expireInDays = it.expireInDays
             if (expireInDays < 0) return@mapNotNull null
             category to expireInDays
