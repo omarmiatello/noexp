@@ -21,10 +21,10 @@ data class Quantity(
     val maxPerDay: Double? = max((maxPerWeek ?: 0) / 7.0, (maxPerYear ?: 0) / 365.0).takeIf { it != 0.0 }
     val minDaysForConsume = maxPerDay?.let { (1 / it).roundToInt() }
 
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
 
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -47,10 +47,10 @@ data class Product(
 
     fun expireFormatted(now: Long = System.currentTimeMillis()) = DateUtils.formatRelativeShort(expireDate, now)
 
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
 
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -67,9 +67,9 @@ data class Category(
 
     override fun compareTo(other: Category): Int = sortKey.compareTo(other.sortKey)
 
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
 
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }

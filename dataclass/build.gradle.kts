@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.3.72"
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
+    kotlin("plugin.serialization") version "1.4.0"
 }
 
 repositories {
@@ -8,8 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC")
 }
 
 tasks {

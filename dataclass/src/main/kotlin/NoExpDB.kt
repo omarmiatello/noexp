@@ -2,6 +2,7 @@ package com.github.omarmiatello.noexp
 
 import com.github.omarmiatello.noexp.utils.json
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.parse
 
 @Serializable
 data class NoExpDB(
@@ -13,10 +14,10 @@ data class NoExpDB(
     val expireDateByCategory: Map<String, Long>? = null,
     val expireDateByBarcode: Map<String, Long>? = null
 ) : NoExpDBModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
 
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -42,7 +43,7 @@ sealed class NoExpDBModel {
         val catParents: List<String>? = null,
         val position: String? = null
     ) : NoExpDBModel() {
-        override fun toJson() = json.stringify(serializer(), this)
+        override fun toJson() = json.encodeToString(serializer(), this)
 
         fun toMap() = mapOf(
             "name" to name,
@@ -64,7 +65,7 @@ sealed class NoExpDBModel {
         )
 
         companion object {
-            fun fromJson(string: kotlin.String) = json.parse(serializer(), string)
+            fun fromJson(string: kotlin.String) = json.decodeFromString(serializer(), string)
         }
     }
 
@@ -82,10 +83,10 @@ sealed class NoExpDBModel {
         val cat: List<String>? = null,
         val catParents: List<String>? = null
     ) : NoExpDBModel() {
-        override fun toJson() = json.stringify(serializer(), this)
+        override fun toJson() = json.encodeToString(serializer(), this)
 
         companion object {
-            fun fromJson(string: String) = json.parse(serializer(), string)
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
         }
     }
 
@@ -97,10 +98,10 @@ sealed class NoExpDBModel {
         val expireDate: Long? = null,
         val archiveDate: Long? = null
     ) : NoExpDBModel() {
-        override fun toJson() = json.stringify(serializer(), this)
+        override fun toJson() = json.encodeToString(serializer(), this)
 
         companion object {
-            fun fromJson(string: String) = json.parse(serializer(), string)
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
         }
     }
 
@@ -117,10 +118,10 @@ sealed class NoExpDBModel {
         val maxPerWeek: Int? = null,
         val maxPerYear: Int? = null
     ) : NoExpDBModel() {
-        override fun toJson() = json.stringify(serializer(), this)
+        override fun toJson() = json.encodeToString(serializer(), this)
 
         companion object {
-            fun fromJson(string: String) = json.parse(serializer(), string)
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
         }
     }
 }

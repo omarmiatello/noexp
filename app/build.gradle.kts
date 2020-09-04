@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
 }
 
 repositories {
@@ -7,7 +7,6 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.squareup.okhttp3:okhttp:4.4.0")
     implementation(project(":categories-parser"))
