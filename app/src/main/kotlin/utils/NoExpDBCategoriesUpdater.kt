@@ -33,4 +33,3 @@ fun NoExpDB.updateDB(categories: List<Category>, forceUpdate: Boolean): NoExpDB 
         expireDateByBarcode = copy.mapOfEstimateExpireDateByBarcode()
     )
 }
-

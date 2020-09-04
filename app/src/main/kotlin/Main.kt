@@ -4,18 +4,18 @@ import com.github.omarmiatello.noexp.utils.*
 
 
 fun main() {
-    val isProduction = false
+    val isProduction = true
 
     val settings = cache("settings.json") { Settings() }
 
-    val categories =
-        cache("parsed-categories.json", forceUpdate = true) {
-            NoExpCategoriesParser.parse(categoriesFile)
-        }
+    var categories = cache("parsed-categories.json", forceUpdate = true) {
+        NoExpCategoriesParser.parse(categoriesFile)
+    }
 
     val noexp = cache("noexp.json", forceUpdate = isProduction) {
-        ExternalData.getNoExp(settings.db_url, forceUpdate = true)
-            .updateDB(categories, forceUpdate = true)
+        val noExp = ExternalData.getNoExp(settings.db_url, forceUpdate = true)
+        categories = categories.updateQuantity(noExp)
+        noExp.updateDB(categories, forceUpdate = true)
     }
 
     if (isProduction) {
@@ -32,5 +32,3 @@ fun main() {
             products.sortedBy { it.expireDate })
     }
 }
-
-
