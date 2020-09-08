@@ -67,32 +67,30 @@ object NoExpCategoriesParser {
         )
     }
 
-    private fun List<Category>.toFormattedString(products: List<Product>) =
-        "${"--==[ Categories ]==--".padEnd(40)} | current | quantity | week | year | alias\n" + joinToString("\n") { category ->
-            buildString {
-                append(category.allParents.joinToString("") { "\t" })
-                append(category.name.padEnd(40 - (category.allParents.size * 4)))
-                append(" | ${products.count {
-                    it.cat.first().let { cat -> category.name == cat.name || category.name in cat.allParents }
-                }}".padEnd(10))
-                append(
-                    " | ${category.quantity?.min ?: 0} ${category.quantity?.desired ?: 0} ${category.quantity?.max ?: 0}".padEnd(
-                        11
-                    )
-                )
-                append(
-                    " | ${if (category.quantity?.maxPerWeek ?: 0 > 0) category.quantity?.maxPerWeek else ""}".padEnd(
-                        7
-                    )
-                )
-                append(
-                    " | ${if (category.quantity?.maxPerYear ?: 0 > 0) category.quantity?.maxPerYear else ""}".padEnd(
-                        7
-                    )
-                )
-                append(" | ${category.alias.joinToString()}")
+    private fun List<Category>.toFormattedString(products: List<Product>) = buildString {
+        append("--==[ Categories ]==--".padEnd(40))
+        appendLine(" | current | quantity | week | year | alias")
+        this@toFormattedString.forEach { category ->
+            val tabulation = category.allParents.joinToString("") { "\t" }
+            val tabulationSize = category.allParents.size * 4
+            val productsCount = products.count {
+                it.cat.first().let { cat -> category.name == cat.name || category.name in cat.allParents }
             }
+            val min = category.quantity?.min ?: 0
+            val desired = category.quantity?.desired ?: 0
+            val max = category.quantity?.max ?: 0
+            val maxPerWeek = if (category.quantity?.maxPerWeek ?: 0 > 0) category.quantity?.maxPerWeek else ""
+            val maxPerYear = if (category.quantity?.maxPerYear ?: 0 > 0) category.quantity?.maxPerYear else ""
+            append(tabulation)
+            append(category.name.padEnd(40 - tabulationSize))
+            append(" | $productsCount".padEnd(10))
+            append(" | $min $desired $max".padEnd(11))
+            append(" | $maxPerWeek".padEnd(7))
+            append(" | $maxPerYear".padEnd(7))
+            appendLine(" | ${category.alias.joinToString()}")
         }
+    }
+
 
     private operator fun <E> List<E>.component6() = get(5)
 

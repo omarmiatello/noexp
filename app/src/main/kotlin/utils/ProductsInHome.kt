@@ -14,9 +14,11 @@ fun productsInHome(categories: List<Category>, products: List<Product>) = buildS
             if (checkQuantity.min != null) append(" | Quantity: Meno di min:${checkQuantity.min}")
             if (checkQuantity.desired != null) append(" | Quantity: Meno di desired:${checkQuantity.desired}")
             if (checkQuantity.max != null) append(" | Quantity: Più di max:${checkQuantity.max}")
-            if (checkQuantity.productsDaysForConsume.isNotEmpty()) append(" | Quantity: daysForConsume :${checkQuantity.productsDaysForConsume.map {
-                "${it.product.name}[${it.productsLeft} in ${it.daysLeft} days < 1 product each ${it.minDaysForConsume} day] "
-            }}")
+            if (checkQuantity.productsDaysForConsume.isNotEmpty()) {
+                append(" | Quantity: daysForConsume :")
+                append(checkQuantity.productsDaysForConsume
+                    .joinToString { "${it.product.name}[${it.productsLeft} in ${it.daysLeft} days < 1 product each ${it.minDaysForConsume} day] " })
+            }
             if (productsInCategory.isNotEmpty()) {
                 append(" (${productsInCategory.expiresFormatted()})")
                 val tab2 = (category.allParents + "").joinToString("") { "\t" }

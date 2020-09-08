@@ -22,7 +22,7 @@ fun NoExpDBModel.ProductDao.toProduct(categoriesMap: Map<String, Category>) = Pr
     quantity = toQuantityOrNull(),
     cat = cat.orEmpty().map { categoriesMap.getValue(it) },
     catParents = catParents.orEmpty().map { categoriesMap.getValue(it) },
-    position = position
+    position = position,
 )
 
 fun NoExpDBModel.ProductDao.toQuantityOrNull() =
@@ -32,7 +32,7 @@ fun NoExpDBModel.ProductDao.toQuantityOrNull() =
             desired = desired,
             max = max,
             maxPerWeek = maxPerWeek,
-            maxPerYear = maxPerYear
+            maxPerYear = maxPerYear,
         )
     } else null
 
@@ -42,7 +42,7 @@ fun NoExpDBModel.CategoryDao.toCategory() = Category(
     directParent = directParent,
     allParents = allParents.orEmpty(),
     directChildren = directChildren.orEmpty(),
-    quantity = toQuantityOrNull()
+    quantity = toQuantityOrNull(),
 )
 
 fun NoExpDBModel.CategoryDao.toQuantityOrNull() =
@@ -52,7 +52,7 @@ fun NoExpDBModel.CategoryDao.toQuantityOrNull() =
             desired = desired,
             max = max,
             maxPerWeek = maxPerWeek,
-            maxPerYear = maxPerYear
+            maxPerYear = maxPerYear,
         )
     } else null
 
@@ -74,7 +74,7 @@ fun Product.toProductDao() = NoExpDBModel.ProductDao(
     maxPerYear = quantity?.maxPerYear,
     cat = cat.map { it.name }.takeIf { it.isNotEmpty() },
     catParents = catParents.map { it.name }.takeIf { it.isNotEmpty() },
-    position = position
+    position = position,
 )
 
 fun Product.toBarcodeDao() = NoExpDBModel.BarcodeDao(
@@ -82,13 +82,6 @@ fun Product.toBarcodeDao() = NoExpDBModel.BarcodeDao(
     description = description,
     pictureUrl = pictureUrl,
     barcode = barcode,
-    max = quantity?.max,
-    min = quantity?.min,
-    desired = quantity?.desired,
-    maxPerWeek = quantity?.maxPerWeek,
-    maxPerYear = quantity?.maxPerYear,
-    cat = cat.map { it.name }.takeIf { it.isNotEmpty() },
-    catParents = catParents.map { it.name }.takeIf { it.isNotEmpty() }
 )
 
 fun Product.toArchivedDao(archiveDate: Long = System.currentTimeMillis()) = NoExpDBModel.ArchivedDao(
@@ -96,7 +89,7 @@ fun Product.toArchivedDao(archiveDate: Long = System.currentTimeMillis()) = NoEx
     qr = qr,
     insertDate = insertDate,
     expireDate = expireDate,
-    archiveDate = archiveDate
+    archiveDate = archiveDate,
 )
 
 fun Category.toCategoryDao() = NoExpDBModel.CategoryDao(
@@ -109,5 +102,5 @@ fun Category.toCategoryDao() = NoExpDBModel.CategoryDao(
     desired = quantity?.desired,
     max = quantity?.max,
     maxPerWeek = quantity?.maxPerWeek,
-    maxPerYear = quantity?.maxPerYear
+    maxPerYear = quantity?.maxPerYear,
 )

@@ -2,7 +2,6 @@ package com.github.omarmiatello.noexp
 
 import com.github.omarmiatello.noexp.utils.json
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.parse
 
 @Serializable
 data class NoExpDB(
@@ -12,7 +11,7 @@ data class NoExpDB(
     val lastQr: String? = null,
     val category: Map<String, CategoryDao>? = null,
     val expireDateByCategory: Map<String, Long>? = null,
-    val expireDateByBarcode: Map<String, Long>? = null
+    val expireDateByBarcode: Map<String, Long>? = null,
 ) : NoExpDBModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -41,7 +40,7 @@ sealed class NoExpDBModel {
         val maxPerYear: Int? = null,
         val cat: List<String>? = null,
         val catParents: List<String>? = null,
-        val position: String? = null
+        val position: String? = null,
     ) : NoExpDBModel() {
         override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -61,11 +60,11 @@ sealed class NoExpDBModel {
             "maxPerYear" to maxPerYear,
             "cat" to cat,
             "catParents" to catParents,
-            "position" to position
+            "position" to position,
         )
 
         companion object {
-            fun fromJson(string: kotlin.String) = json.decodeFromString(serializer(), string)
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
         }
     }
 
@@ -75,13 +74,6 @@ sealed class NoExpDBModel {
         val description: String? = null,
         val pictureUrl: String? = null,
         val barcode: String? = null,
-        val min: Int? = null,
-        val desired: Int? = null,
-        val max: Int? = null,
-        val maxPerWeek: Int? = null,
-        val maxPerYear: Int? = null,
-        val cat: List<String>? = null,
-        val catParents: List<String>? = null
     ) : NoExpDBModel() {
         override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -96,7 +88,7 @@ sealed class NoExpDBModel {
         val qr: String? = null,
         val insertDate: Long? = null,
         val expireDate: Long? = null,
-        val archiveDate: Long? = null
+        val archiveDate: Long? = null,
     ) : NoExpDBModel() {
         override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -116,9 +108,22 @@ sealed class NoExpDBModel {
         val desired: Int? = null,
         val max: Int? = null,
         val maxPerWeek: Int? = null,
-        val maxPerYear: Int? = null
+        val maxPerYear: Int? = null,
     ) : NoExpDBModel() {
         override fun toJson() = json.encodeToString(serializer(), this)
+
+        fun toMap() = mapOf(
+            "name" to name,
+            "alias" to alias,
+            "directParent" to directParent,
+            "allParents" to allParents,
+            "directChildren" to directChildren,
+            "min" to min,
+            "desired" to desired,
+            "max" to max,
+            "maxPerWeek" to maxPerWeek,
+            "maxPerYear" to maxPerYear,
+        )
 
         companion object {
             fun fromJson(string: String) = json.decodeFromString(serializer(), string)

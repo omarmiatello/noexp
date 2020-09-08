@@ -16,7 +16,7 @@ data class Quantity(
     val desired: Int? = null,
     val max: Int? = null,
     val maxPerWeek: Int? = null,
-    val maxPerYear: Int? = null
+    val maxPerYear: Int? = null,
 ) : NoExpModel() {
     val maxPerDay: Double? = max((maxPerWeek ?: 0) / 7.0, (maxPerYear ?: 0) / 365.0).takeIf { it != 0.0 }
     val minDaysForConsume = maxPerDay?.let { (1 / it).roundToInt() }
@@ -41,7 +41,7 @@ data class Product(
     val quantity: Quantity? = null,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList(),
-    val position: String? = null
+    val position: String? = null,
 ) : NoExpModel() {
     fun expireInDays(now: Long = System.currentTimeMillis()) = DateUtils.millisToDays(expireDate, now)
 
@@ -61,7 +61,7 @@ data class Category(
     val directParent: String? = null,
     val allParents: List<String> = emptyList(),
     val directChildren: List<String> = emptyList(),
-    val quantity: Quantity? = null
+    val quantity: Quantity? = null,
 ) : NoExpModel(), Comparable<Category> {
     private val sortKey get() = allParents.joinToString("") + name
 

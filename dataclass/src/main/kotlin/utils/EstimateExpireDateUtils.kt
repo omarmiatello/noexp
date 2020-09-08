@@ -23,7 +23,7 @@ fun mapOfEstimateExpireDateByCategory(
         .mapNotNull {
             checkNotNull(it.barcode) { "Missing barcode in $it" }
             val barcodeDao = barcode[it.barcode] ?: return@mapNotNull null
-            val category = barcodeDao.cat?.first() ?: barcodeDao.name?.extractCategories(categories, categories.first())!!.first().name
+            val category = barcodeDao.name?.extractCategories(categories, categories.first())!!.first().name
             val expireInDays = it.expireInDays
             if (expireInDays < 0) return@mapNotNull null
             category to expireInDays
