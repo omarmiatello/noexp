@@ -18,8 +18,14 @@ fun NoExpDB.updateDB(categories: List<Category>, forceUpdate: Boolean): NoExpDB 
         },
         category = categories.map { it.name to it.toCategoryDao() }.toMap(),
     )
+    val mapOfEstimateExpireDaysByCategory = copy.mapOfEstimateExpireDaysByCategory(categories)
     return copy.copy(
-        expireDateByCategory = copy.mapOfEstimateExpireDateByCategory(categories),
+        category = category?.mapValues { (key, value) ->
+            val expireDays = mapOfEstimateExpireDaysByCategory[key]
+            if (expireDays != null) {
+                value.copy(expireDays = expireDays)
+            } else value
+        },
         expireDateByBarcode = copy.mapOfEstimateExpireDateByBarcode(),
     )
 }

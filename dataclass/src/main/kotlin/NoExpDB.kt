@@ -10,7 +10,6 @@ data class NoExpDB(
     val home: Map<String, ProductDao>? = null,
     val lastQr: String? = null,
     val category: Map<String, CategoryDao>? = null,
-    val expireDateByCategory: Map<String, Long>? = null,
     val expireDateByBarcode: Map<String, Long>? = null,
 ) : NoExpDBModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -109,6 +108,7 @@ sealed class NoExpDBModel {
         val max: Int? = null,
         val maxPerWeek: Int? = null,
         val maxPerYear: Int? = null,
+        val expireDays: Int? = null,
     ) : NoExpDBModel() {
         override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -123,6 +123,7 @@ sealed class NoExpDBModel {
             "max" to max,
             "maxPerWeek" to maxPerWeek,
             "maxPerYear" to maxPerYear,
+            "expireDays" to expireDays,
         )
 
         companion object {

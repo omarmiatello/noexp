@@ -6,12 +6,12 @@ import com.github.omarmiatello.noexp.NoExpDBModel
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
-fun mapOfEstimateExpireDateByCategory(
+fun mapOfEstimateExpireDaysByCategory(
     categories: List<Category>,
     barcode: Map<String, NoExpDBModel.BarcodeDao>,
     productList: List<NoExpDBModel.ProductDao>,
     archiveList: List<NoExpDBModel.ArchivedDao>
-): Map<String, Long> {
+): Map<String, Int> {
     val productCategoryDays = productList
         .mapNotNull {
             val category = it.cat?.first() ?: error("Category missing: $it")
@@ -39,7 +39,7 @@ fun mapOfEstimateExpireDateByCategory(
             val excluded = (expireDates.size * 0.1).roundToInt()
             val expireDatesFiltered =
                 if (expireDates.size > 5) expireDates.drop(excluded).dropLast(excluded) else expireDates
-            expireDatesFiltered.average().roundToLong()
+            expireDatesFiltered.average().roundToInt()
         }
 }
 
@@ -66,8 +66,8 @@ fun mapOfEstimateExpireDateByBarcode(
         .mapValues { it.value.average().roundToLong() }
 }
 
-fun NoExpDB.mapOfEstimateExpireDateByCategory(categories: List<Category> = category!!.values.map { it.toCategory() }) =
-    mapOfEstimateExpireDateByCategory(
+fun NoExpDB.mapOfEstimateExpireDaysByCategory(categories: List<Category> = category!!.values.map { it.toCategory() }) =
+    mapOfEstimateExpireDaysByCategory(
         categories,
         barcode!!,
         home!!.values.toList(),

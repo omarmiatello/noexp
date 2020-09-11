@@ -62,6 +62,7 @@ data class Category(
     val allParents: List<String> = emptyList(),
     val directChildren: List<String> = emptyList(),
     val quantity: Quantity? = null,
+    val expireDays: Int? = null,
 ) : NoExpModel(), Comparable<Category> {
     private val sortKey get() = allParents.joinToString("") + name
 
