@@ -43,6 +43,7 @@ fun NoExpDBModel.CategoryDao.toCategory() = Category(
     allParents = allParents.orEmpty(),
     directChildren = directChildren.orEmpty(),
     quantity = toQuantityOrNull(),
+    expireDays = expireDays,
 )
 
 fun NoExpDBModel.CategoryDao.toQuantityOrNull() =
@@ -103,4 +104,5 @@ fun Category.toCategoryDao() = NoExpDBModel.CategoryDao(
     max = quantity?.max,
     maxPerWeek = quantity?.maxPerWeek,
     maxPerYear = quantity?.maxPerYear,
+    expireDays = expireDays,
 )
