@@ -12,7 +12,6 @@ fun NoExpDB.toProductsAndCategories(): Pair<List<Product>, List<Category>> {
 
 fun NoExpDBModel.ProductDao.toProduct(categoriesMap: Map<String, Category>) = Product(
     name = name ?: error("Missing 'name' in $this"),
-    description = description,
     pictureUrl = pictureUrl,
     barcode = barcode,
     qr = qr ?: error("Missing 'qr' in $this"),
@@ -61,7 +60,6 @@ fun NoExpDBModel.CategoryDao.toQuantityOrNull() =
 
 fun Product.toProductDao() = NoExpDBModel.ProductDao(
     name = name,
-    description = description,
     pictureUrl = pictureUrl,
     barcode = barcode,
     qr = qr,
@@ -80,7 +78,6 @@ fun Product.toProductDao() = NoExpDBModel.ProductDao(
 
 fun Product.toBarcodeDao() = NoExpDBModel.BarcodeDao(
     name = name,
-    description = description,
     pictureUrl = pictureUrl,
     barcode = barcode,
 )

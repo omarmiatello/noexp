@@ -31,7 +31,6 @@ data class Quantity(
 @Serializable
 data class Product(
     val name: String,
-    val description: String? = null,
     val pictureUrl: String? = null,
     val barcode: String? = null,
     val qr: String,

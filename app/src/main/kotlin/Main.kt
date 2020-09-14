@@ -15,7 +15,7 @@ fun main() {
     val noexp = cache("noexp.json", forceUpdate = isProduction) {
         val noExp = ExternalData.getNoExp(settings.db_url, forceUpdate = true)
         categories = categories.updateQuantity(noExp)
-        noExp.updateDB(categories, forceUpdate = true)
+        updateDB(noExp, categories, forceUpdate = true)
     }
 
     if (isProduction) {

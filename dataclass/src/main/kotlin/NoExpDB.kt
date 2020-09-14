@@ -25,7 +25,6 @@ sealed class NoExpDBModel {
     @Serializable
     data class ProductDao(
         val name: String? = null,
-        val description: String? = null,
         val pictureUrl: String? = null,
         val barcode: String? = null,
         val qr: String? = null,
@@ -45,7 +44,6 @@ sealed class NoExpDBModel {
 
         fun toMap() = mapOf(
             "name" to name,
-            "description" to description,
             "pictureUrl" to pictureUrl,
             "barcode" to barcode,
             "qr" to qr,
@@ -70,7 +68,6 @@ sealed class NoExpDBModel {
     @Serializable
     data class BarcodeDao(
         val name: String? = null,
-        val description: String? = null,
         val pictureUrl: String? = null,
         val barcode: String? = null,
     ) : NoExpDBModel() {
