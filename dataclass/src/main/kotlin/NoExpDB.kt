@@ -11,6 +11,7 @@ data class NoExpDB(
     val lastQr: String? = null,
     val category: Map<String, CategoryDao>? = null,
     val expireDateByBarcode: Map<String, Long>? = null,
+    val cart: Map<String, ProductCartDao>? = null,
 ) : NoExpDBModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -31,11 +32,6 @@ sealed class NoExpDBModel {
         val insertDate: Long? = null,
         val expireDate: Long? = null,
         val lastCheckDate: Long? = null,
-        val min: Int? = null,
-        val desired: Int? = null,
-        val max: Int? = null,
-        val maxPerWeek: Int? = null,
-        val maxPerYear: Int? = null,
         val cat: List<String>? = null,
         val catParents: List<String>? = null,
         val position: String? = null,
@@ -50,14 +46,36 @@ sealed class NoExpDBModel {
             "insertDate" to insertDate,
             "expireDate" to expireDate,
             "lastCheckDate" to lastCheckDate,
-            "min" to min,
-            "desired" to desired,
-            "max" to max,
-            "maxPerWeek" to maxPerWeek,
-            "maxPerYear" to maxPerYear,
             "cat" to cat,
             "catParents" to catParents,
             "position" to position,
+        )
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    @Serializable
+    data class ProductCartDao(
+        val name: String? = null,
+        val pictureUrl: String? = null,
+        val barcode: String? = null,
+        val insertDate: Long? = null,
+        val expireDate: Long? = null,
+        val cat: List<String>? = null,
+        val catParents: List<String>? = null,
+    ) : NoExpDBModel() {
+        override fun toJson() = json.encodeToString(serializer(), this)
+
+        fun toMap() = mapOf(
+            "name" to name,
+            "pictureUrl" to pictureUrl,
+            "barcode" to barcode,
+            "insertDate" to insertDate,
+            "expireDate" to expireDate,
+            "cat" to cat,
+            "catParents" to catParents,
         )
 
         companion object {

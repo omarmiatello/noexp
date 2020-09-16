@@ -37,7 +37,6 @@ data class Product(
     val insertDate: Long,
     val expireDate: Long,
     val lastCheckDate: Long,
-    val quantity: Quantity? = null,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList(),
     val position: String? = null,
@@ -66,6 +65,27 @@ data class Category(
     private val sortKey get() = allParents.joinToString("") + name
 
     override fun compareTo(other: Category): Int = sortKey.compareTo(other.sortKey)
+
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+@Serializable
+data class ProductCart(
+    val name: String,
+    val pictureUrl: String? = null,
+    val barcode: String? = null,
+    val insertDate: Long,
+    val expireDate: Long,
+    val cat: List<Category> = emptyList(),
+    val catParents: List<Category> = emptyList(),
+) : NoExpModel() {
+    fun expireInDays(now: Long = System.currentTimeMillis()) = DateUtils.millisToDays(expireDate, now)
+
+    fun expireFormatted(now: Long = System.currentTimeMillis()) = DateUtils.formatRelativeShort(expireDate, now)
 
     override fun toJson() = json.encodeToString(serializer(), this)
 

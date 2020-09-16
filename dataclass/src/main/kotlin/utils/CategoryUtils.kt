@@ -25,19 +25,20 @@ fun List<Category>.filterWithProducts(products: List<Product>): List<Category> =
 }
 
 fun String.extractCategories(categories: List<Category>, itemIfEmpty: Category? = null): List<Category> {
+    fun String.cleanString() = replace("'", " ")
     fun findPosition(string: String, category: Category): Pair<Int, Category>? {
         var idx: Int
-        idx = string.indexOf(" ${category.name} ", ignoreCase = true)
+        idx = string.indexOf(" ${category.name.cleanString()} ", ignoreCase = true)
         if (idx >= 0) return idx to category
         category.alias.forEach {
-            idx = string.indexOf(" $it ", ignoreCase = true)
+            idx = string.indexOf(" ${it.cleanString()} ", ignoreCase = true)
             if (idx >= 0) return idx to category
         }
         return null
     }
 
     val sorted =
-        categories.mapNotNull { category -> findPosition(" $this ", category) }.sortedByDescending { it.second.name }
+        categories.mapNotNull { category -> findPosition(" ${cleanString()} ", category) }.sortedByDescending { it.second.name }
             .sortedBy { it.first }.map { it.second }
     val parents = sorted.flatMap { it.allParents }
     return sorted.filter { it.name !in parents }

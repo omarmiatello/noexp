@@ -18,22 +18,20 @@ fun NoExpDBModel.ProductDao.toProduct(categoriesMap: Map<String, Category>) = Pr
     insertDate = insertDate ?: error("Missing 'insertDate' in $this"),
     expireDate = expireDate ?: error("Missing 'expireDate' in $this"),
     lastCheckDate = lastCheckDate ?: insertDate,
-    quantity = toQuantityOrNull(),
     cat = cat.orEmpty().map { categoriesMap.getValue(it) },
     catParents = catParents.orEmpty().map { categoriesMap.getValue(it) },
     position = position,
 )
 
-fun NoExpDBModel.ProductDao.toQuantityOrNull() =
-    if (min != null || desired != null || max != null || maxPerWeek != null || maxPerYear != null) {
-        Quantity(
-            min = min,
-            desired = desired,
-            max = max,
-            maxPerWeek = maxPerWeek,
-            maxPerYear = maxPerYear,
-        )
-    } else null
+fun NoExpDBModel.ProductCartDao.toProductCart(categoriesMap: Map<String, Category>) = ProductCart(
+    name = name ?: error("Missing 'name' in $this"),
+    pictureUrl = pictureUrl,
+    barcode = barcode,
+    insertDate = insertDate ?: error("Missing 'insertDate' in $this"),
+    expireDate = expireDate ?: error("Missing 'expireDate' in $this"),
+    cat = cat.orEmpty().map { categoriesMap.getValue(it) },
+    catParents = catParents.orEmpty().map { categoriesMap.getValue(it) },
+)
 
 fun NoExpDBModel.CategoryDao.toCategory() = Category(
     name = name ?: error("Missing 'name' in $this"),
@@ -66,11 +64,6 @@ fun Product.toProductDao() = NoExpDBModel.ProductDao(
     insertDate = insertDate,
     expireDate = expireDate,
     lastCheckDate = lastCheckDate,
-    min = quantity?.min,
-    desired = quantity?.desired,
-    max = quantity?.max,
-    maxPerWeek = quantity?.maxPerWeek,
-    maxPerYear = quantity?.maxPerYear,
     cat = cat.map { it.name }.takeIf { it.isNotEmpty() },
     catParents = catParents.map { it.name }.takeIf { it.isNotEmpty() },
     position = position,
@@ -88,6 +81,29 @@ fun Product.toArchivedDao(archiveDate: Long = System.currentTimeMillis()) = NoEx
     insertDate = insertDate,
     expireDate = expireDate,
     archiveDate = archiveDate,
+)
+
+fun ProductCart.toProductCartDao() = NoExpDBModel.ProductCartDao(
+    name = name,
+    pictureUrl = pictureUrl,
+    barcode = barcode,
+    insertDate = insertDate,
+    expireDate = expireDate,
+    cat = cat.map { it.name }.takeIf { it.isNotEmpty() },
+    catParents = catParents.map { it.name }.takeIf { it.isNotEmpty() },
+)
+
+fun ProductCart.toProduct(qr: String, lastCheckDate: Long = System.currentTimeMillis()) = Product(
+    name = name,
+    pictureUrl = pictureUrl,
+    barcode = barcode,
+    qr = qr,
+    insertDate = insertDate,
+    expireDate = expireDate,
+    lastCheckDate = lastCheckDate,
+    cat = cat,
+    catParents = catParents,
+    position = null,
 )
 
 fun Category.toCategoryDao() = NoExpDBModel.CategoryDao(
