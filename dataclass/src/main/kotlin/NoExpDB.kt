@@ -31,6 +31,7 @@ sealed class NoExpDBModel {
         val qr: String? = null,
         val insertDate: Long? = null,
         val expireDate: Long? = null,
+        val expireDateType: String? = null,
         val lastCheckDate: Long? = null,
         val cat: List<String>? = null,
         val catParents: List<String>? = null,
@@ -63,6 +64,7 @@ sealed class NoExpDBModel {
         val barcode: String? = null,
         val insertDate: Long? = null,
         val expireDate: Long? = null,
+        val expireDateType: String? = null,
         val cat: List<String>? = null,
         val catParents: List<String>? = null,
     ) : NoExpDBModel() {
@@ -102,6 +104,7 @@ sealed class NoExpDBModel {
         val qr: String? = null,
         val insertDate: Long? = null,
         val expireDate: Long? = null,
+        val expireDateType: String? = null,
         val archiveDate: Long? = null,
     ) : NoExpDBModel() {
         override fun toJson() = json.encodeToString(serializer(), this)

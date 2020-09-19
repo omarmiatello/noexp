@@ -11,6 +11,21 @@ sealed class NoExpModel {
 }
 
 @Serializable
+sealed class ExpireDate {
+    @Serializable
+    class Real(val value: Long) : ExpireDate()
+
+    @Serializable
+    class Estimated(val value: Long) : ExpireDate()
+
+    @Serializable
+    object NoExp : ExpireDate()
+
+    @Serializable
+    object Unknown : ExpireDate()
+}
+
+@Serializable
 data class Quantity(
     val min: Int? = null,
     val desired: Int? = null,
@@ -35,15 +50,27 @@ data class Product(
     val barcode: String? = null,
     val qr: String,
     val insertDate: Long,
-    val expireDate: Long,
+    val expireDate: ExpireDate,
     val lastCheckDate: Long,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList(),
     val position: String? = null,
 ) : NoExpModel() {
-    fun expireInDays(now: Long = System.currentTimeMillis()) = DateUtils.millisToDays(expireDate, now)
+    fun expireInDays(now: Long = System.currentTimeMillis()) =
+        when (expireDate) {
+            is ExpireDate.Real -> DateUtils.millisToDays(expireDate.value, now)
+            is ExpireDate.Estimated -> DateUtils.millisToDays(expireDate.value, now)
+            ExpireDate.NoExp,
+            ExpireDate.Unknown -> null
+        }
 
-    fun expireFormatted(now: Long = System.currentTimeMillis()) = DateUtils.formatRelativeShort(expireDate, now)
+    fun expireFormatted(now: Long = System.currentTimeMillis()) =
+        when (expireDate) {
+            is ExpireDate.Real -> DateUtils.formatRelativeShort(expireDate.value, now)
+            is ExpireDate.Estimated -> DateUtils.formatRelativeShort(expireDate.value, now)
+            ExpireDate.NoExp,
+            ExpireDate.Unknown -> null
+        }
 
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -68,6 +95,8 @@ data class Category(
 
     override fun toJson() = json.encodeToString(serializer(), this)
 
+    fun estimateExpireDate(insertDate: Long) = expireDays?.let { insertDate + it.toLong() * 24 * 60 * 60 * 1000 }
+
     companion object {
         fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
@@ -79,13 +108,25 @@ data class ProductCart(
     val pictureUrl: String? = null,
     val barcode: String? = null,
     val insertDate: Long,
-    val expireDate: Long,
+    val expireDate: ExpireDate,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList(),
 ) : NoExpModel() {
-    fun expireInDays(now: Long = System.currentTimeMillis()) = DateUtils.millisToDays(expireDate, now)
+    fun expireInDays(now: Long = System.currentTimeMillis()) =
+        when (expireDate) {
+            is ExpireDate.Real -> DateUtils.millisToDays(expireDate.value, now)
+            is ExpireDate.Estimated -> DateUtils.millisToDays(expireDate.value, now)
+            ExpireDate.NoExp,
+            ExpireDate.Unknown -> null
+        }
 
-    fun expireFormatted(now: Long = System.currentTimeMillis()) = DateUtils.formatRelativeShort(expireDate, now)
+    fun expireFormatted(now: Long = System.currentTimeMillis()) =
+        when (expireDate) {
+            is ExpireDate.Real -> DateUtils.formatRelativeShort(expireDate.value, now)
+            is ExpireDate.Estimated -> DateUtils.formatRelativeShort(expireDate.value, now)
+            ExpireDate.NoExp,
+            ExpireDate.Unknown -> null
+        }
 
     override fun toJson() = json.encodeToString(serializer(), this)
 
