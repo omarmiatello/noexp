@@ -42,7 +42,7 @@ fun CategoryProducts.toCheckQuantity(now: Long = System.currentTimeMillis()) =
                         product = product,
                         daysLeft = ((expireDate - now) / 24 / 60 / 60 / 1000).toInt(),
                         productsLeft = products.count {
-                            val prodExpireDate = product.expireDate.valueIfRealOrEstimate ?: return@count false
+                            val prodExpireDate = it.expireDate.valueIfRealOrEstimate ?: return@count false
                             prodExpireDate <= expireDate
                         },
                         minDaysForConsume = minDaysForConsume
