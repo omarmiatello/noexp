@@ -125,6 +125,7 @@ data class ProductCart(
     val expireDate: ExpireDate,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList(),
+    val cartId: String? = null,
 ) : NoExpModel() {
     fun expireInDays(now: Long = System.currentTimeMillis()) =
         when (expireDate) {
