@@ -24,7 +24,14 @@ sealed class ExpireDate {
     @Serializable
     object Unknown : ExpireDate()
 
-    val valueOrNull get() = when (this) {
+    val valueIfReal get() = when (this) {
+        is ExpireDate.Real -> value
+        is ExpireDate.Estimated,
+        ExpireDate.NoExpire,
+        ExpireDate.Unknown -> null
+    }
+
+    val valueIfRealOrEstimate get() = when (this) {
         is ExpireDate.Real -> value
         is ExpireDate.Estimated -> value
         ExpireDate.NoExpire,

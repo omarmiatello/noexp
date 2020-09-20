@@ -1,7 +1,6 @@
 package com.github.omarmiatello.noexp.utils
 
 import com.github.omarmiatello.noexp.Category
-import com.github.omarmiatello.noexp.ExpireDate
 import com.github.omarmiatello.noexp.Product
 
 data class CheckQuantity(
@@ -38,12 +37,12 @@ fun CategoryProducts.toCheckQuantity(now: Long = System.currentTimeMillis()) =
             max = CheckQuantity.IssueInCategory(products.size, max).takeIf { it.current > it.expected },
             productsDaysForConsume = category.quantity?.minDaysForConsume?.let { minDaysForConsume ->
                 products.mapNotNull { product ->
-                    val expireDate = product.expireDate.valueOrNull ?: return@mapNotNull null
+                    val expireDate = product.expireDate.valueIfRealOrEstimate ?: return@mapNotNull null
                     CheckQuantity.ForProduct(
                         product = product,
                         daysLeft = ((expireDate - now) / 24 / 60 / 60 / 1000).toInt(),
                         productsLeft = products.count {
-                            val prodExpireDate = product.expireDate.valueOrNull ?: return@count false
+                            val prodExpireDate = product.expireDate.valueIfRealOrEstimate ?: return@count false
                             prodExpireDate <= expireDate
                         },
                         minDaysForConsume = minDaysForConsume
