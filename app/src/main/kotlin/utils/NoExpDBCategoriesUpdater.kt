@@ -3,29 +3,28 @@ package com.github.omarmiatello.noexp.utils
 import com.github.omarmiatello.noexp.Category
 import com.github.omarmiatello.noexp.NoExpDB
 
-fun updateDB(noExpDB: NoExpDB, categories: List<Category>, forceUpdate: Boolean): NoExpDB {
-    var noExpDB = noExpDB.copy(
-        home = noExpDB.home?.mapValues {
-            if (forceUpdate || it.value.cat.isNullOrEmpty()) {
-                val name = it.value.name ?: error("Missing 'name' in ${it.value}")
-                val cat = name.extractCategories(categories, itemIfEmpty = categories.first())
-                it.value.copy(
-                    cat = cat.map { it.name },
-                    catParents = cat.flatMap { it.allParents }.distinct()
-                )
-            } else it.value
+fun updateDB(noExpDB: NoExpDB, categories: List<Category>, forceUpdate: Boolean): NoExpDB = noExpDB.copy(
+    home = noExpDB.home?.mapValues { (_, productDao) ->
+        if (forceUpdate || productDao.cat.isNullOrEmpty()) {
+            val name = productDao.name ?: error("Missing 'name' in $productDao")
+            val cat = name.extractCategories(categories, itemIfEmpty = categories.first())
+            productDao.copy(
+                cat = cat.map { it.name },
+                catParents = cat.flatMap { it.allParents }.distinct()
+            )
+        } else productDao
 
-        },
-        category = categories.map { it.name to it.toCategoryDao() }.toMap(),
-    )
-    val mapOfEstimateExpireDaysByCategory = noExpDB.mapOfEstimateExpireDaysByCategory(categories)
-    return noExpDB.copy(
-        category = noExpDB.category?.mapValues { (key, value) ->
+    },
+    category = categories.map { it.name to it.toCategoryDao() }.toMap(),
+).let { db ->
+    val mapOfEstimateExpireDaysByCategory = db.mapOfEstimateExpireDaysByCategory(categories)
+    db.copy(
+        category = db.category?.mapValues { (key, categoryDao) ->
             val expireDays = mapOfEstimateExpireDaysByCategory[key]
             if (expireDays != null) {
-                value.copy(expireDays = expireDays)
-            } else value
+                categoryDao.copy(expireDays = expireDays)
+            } else categoryDao
         },
-        expireDateByBarcode = noExpDB.mapOfEstimateExpireDateByBarcode(),
+        expireDateByBarcode = db.mapOfEstimateExpireDateByBarcode(),
     )
 }

@@ -29,6 +29,6 @@ fun main() {
     cacheText("productsInHome.txt", forceUpdate = true) {
         productsInHome(
             categories,
-            products.sortedBy { it.expireDate })
+            products.sortedBy { it.expireDate.valueOrNull ?: Long.MAX_VALUE })
     }
 }

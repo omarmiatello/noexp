@@ -1,9 +1,11 @@
 package com.github.omarmiatello.noexp.utils
 
+import kotlin.math.pow
+
 object QRGenerator {
     const val URL_PREFIX = "https://jackl.dev/home/"
 
-    val baseN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    private const val baseN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
     fun intToBase36(num: Int): String {
         val max = baseN.length
@@ -18,10 +20,8 @@ object QRGenerator {
         val max = baseN.length
         var num = 0
         base36.toUpperCase().reversed().forEachIndexed { index, c ->
-            num += (baseN.indexOf(c).takeIf { it != -1 }!! + 1) * (Math.pow(
-                max.toDouble(),
-                index.toDouble()
-            ).toInt())
+            val cIdx = baseN.indexOf(c).also { if (it == -1) error("Unknown value $c in $baseN") }
+            num += (cIdx + 1) * (max.toDouble().pow(index.toDouble()).toInt())
         }
         return num - 1
     }

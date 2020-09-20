@@ -15,7 +15,7 @@ fun mapOfEstimateExpireDaysByCategory(
     val productCategoryDays = productList
         .mapNotNull {
             val category = it.cat?.first() ?: error("Category missing: $it")
-            val expireInDays = it.expireInDays
+            val expireInDays = it.expireInDays ?: return@mapNotNull null
             if (expireInDays < 0) return@mapNotNull null
             category to expireInDays
         }
@@ -24,7 +24,7 @@ fun mapOfEstimateExpireDaysByCategory(
             checkNotNull(it.barcode) { "Missing barcode in $it" }
             val barcodeDao = barcode[it.barcode] ?: return@mapNotNull null
             val category = barcodeDao.name?.extractCategories(categories, categories.first())!!.first().name
-            val expireInDays = it.expireInDays
+            val expireInDays = it.expireInDays ?: return@mapNotNull null
             if (expireInDays < 0) return@mapNotNull null
             category to expireInDays
         }
@@ -50,14 +50,14 @@ fun mapOfEstimateExpireDateByBarcode(
     val productCategoryDays = productList
         .mapNotNull {
             if (it.barcode == null) return@mapNotNull null
-            val expireInDays = it.expireInDays
+            val expireInDays = it.expireInDays ?: return@mapNotNull null
             if (expireInDays < 0) return@mapNotNull null
             it.barcode to expireInDays
         }
     val archiveCategoryDays = archiveList
         .mapNotNull {
             checkNotNull(it.barcode) { "Missing barcode in $it" }
-            val expireInDays = it.expireInDays
+            val expireInDays = it.expireInDays ?: return@mapNotNull null
             if (expireInDays < 0) return@mapNotNull null
             it.barcode to expireInDays
         }
@@ -79,8 +79,8 @@ fun NoExpDB.mapOfEstimateExpireDateByBarcode() = mapOfEstimateExpireDateByBarcod
     archiveList = archive!!.values.flatMap { it.values }
 )
 
-private fun expireInDays(expireDate: Long, insertDate: Long) = (expireDate - insertDate) / 1000 / 60 / 60 / 24
+private fun expireInDays(expireDate: Long?, insertDate: Long) = expireDate?.let { (it - insertDate) / 1000 / 60 / 60 / 24 }
 
-private val NoExpDBModel.ArchivedDao.expireInDays get() = expireInDays(expireDate!!, insertDate!!)
+private val NoExpDBModel.ArchivedDao.expireInDays get() = expireInDays(expireDate, insertDate!!)
 
-private val NoExpDBModel.ProductDao.expireInDays get() = expireInDays(expireDate!!, insertDate!!)
+private val NoExpDBModel.ProductDao.expireInDays get() = expireInDays(expireDate, insertDate!!)

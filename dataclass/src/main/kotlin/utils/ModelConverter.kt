@@ -5,7 +5,7 @@ import com.github.omarmiatello.noexp.*
 object ExpireDateKeys {
     const val REAL = "R"
     const val ESTIMATED = "E"
-    const val NOEXP = "N"
+    const val NO_EXPIRE = "N"
     const val UNKNOWN = "U"
 }
 
@@ -15,14 +15,14 @@ fun expireDateFrom(type: String?, expireDate: Long?, category: Category?, insert
     ExpireDateKeys.UNKNOWN,
     ExpireDateKeys.ESTIMATED -> category?.estimateExpireDate(insertDate)?.let { ExpireDate.Estimated(it) }
         ?: ExpireDate.Unknown
-    ExpireDateKeys.NOEXP -> ExpireDate.NoExp
+    ExpireDateKeys.NO_EXPIRE -> ExpireDate.NoExpire
     else -> error("Unknown ExpireDate type $type, with: $expireDate, $category, $insertDate")
 }
 
 fun ExpireDate.toExpireDateDao() = when (this) {
     is ExpireDate.Real -> ExpireDateKeys.REAL to value
-    is ExpireDate.Estimated -> ExpireDateKeys.ESTIMATED to value
-    ExpireDate.NoExp -> ExpireDateKeys.NOEXP to null
+    is ExpireDate.Estimated -> ExpireDateKeys.ESTIMATED to null
+    ExpireDate.NoExpire -> ExpireDateKeys.NO_EXPIRE to null
     ExpireDate.Unknown -> ExpireDateKeys.UNKNOWN to null
 }
 

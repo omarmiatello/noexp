@@ -19,10 +19,17 @@ sealed class ExpireDate {
     class Estimated(val value: Long) : ExpireDate()
 
     @Serializable
-    object NoExp : ExpireDate()
+    object NoExpire : ExpireDate()
 
     @Serializable
     object Unknown : ExpireDate()
+
+    val valueOrNull get() = when (this) {
+        is ExpireDate.Real -> value
+        is ExpireDate.Estimated -> value
+        ExpireDate.NoExpire,
+        ExpireDate.Unknown -> null
+    }
 }
 
 @Serializable
@@ -60,7 +67,7 @@ data class Product(
         when (expireDate) {
             is ExpireDate.Real -> DateUtils.millisToDays(expireDate.value, now)
             is ExpireDate.Estimated -> DateUtils.millisToDays(expireDate.value, now)
-            ExpireDate.NoExp,
+            ExpireDate.NoExpire,
             ExpireDate.Unknown -> null
         }
 
@@ -68,7 +75,7 @@ data class Product(
         when (expireDate) {
             is ExpireDate.Real -> DateUtils.formatRelativeShort(expireDate.value, now)
             is ExpireDate.Estimated -> DateUtils.formatRelativeShort(expireDate.value, now)
-            ExpireDate.NoExp,
+            ExpireDate.NoExpire,
             ExpireDate.Unknown -> null
         }
 
@@ -116,7 +123,7 @@ data class ProductCart(
         when (expireDate) {
             is ExpireDate.Real -> DateUtils.millisToDays(expireDate.value, now)
             is ExpireDate.Estimated -> DateUtils.millisToDays(expireDate.value, now)
-            ExpireDate.NoExp,
+            ExpireDate.NoExpire,
             ExpireDate.Unknown -> null
         }
 
@@ -124,7 +131,7 @@ data class ProductCart(
         when (expireDate) {
             is ExpireDate.Real -> DateUtils.formatRelativeShort(expireDate.value, now)
             is ExpireDate.Estimated -> DateUtils.formatRelativeShort(expireDate.value, now)
-            ExpireDate.NoExp,
+            ExpireDate.NoExpire,
             ExpireDate.Unknown -> null
         }
 
