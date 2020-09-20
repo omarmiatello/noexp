@@ -50,9 +50,10 @@ fun NoExpDBModel.ProductDao.toProduct(categoriesMap: Map<String, Category>): Pro
     )
 }
 
-fun NoExpDBModel.ProductCartDao.toProductCart(cartId: String?, categoriesMap: Map<String, Category>): ProductCart {
+fun NoExpDBModel.ProductCartDao.toProductCart(categoriesMap: Map<String, Category>): ProductCart {
     val categories = cat.orEmpty().map { categoriesMap.getValue(it) }
     return ProductCart(
+        id = id,
         name = name ?: error("Missing 'name' in $this"),
         pictureUrl = pictureUrl,
         barcode = barcode,
@@ -60,7 +61,6 @@ fun NoExpDBModel.ProductCartDao.toProductCart(cartId: String?, categoriesMap: Ma
         expireDate = expireDateFrom(expireDateType, expireDate, categories.firstOrNull(), insertDate),
         cat = categories,
         catParents = catParents.orEmpty().map { categoriesMap.getValue(it) },
-        cartId = cartId
     )
 }
 
@@ -122,9 +122,10 @@ fun Product.toArchivedDao(archiveDate: Long = System.currentTimeMillis()): NoExp
     )
 }
 
-fun ProductCart.toProductCartDao(): Pair<String?, NoExpDBModel.ProductCartDao> {
+fun ProductCart.toProductCartDao(): NoExpDBModel.ProductCartDao {
     val (expireDateType, expireDate) = expireDate.toExpireDateDao()
-    return cartId to NoExpDBModel.ProductCartDao(
+    return NoExpDBModel.ProductCartDao(
+        id = id,
         name = name,
         pictureUrl = pictureUrl,
         barcode = barcode,

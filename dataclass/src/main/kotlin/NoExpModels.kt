@@ -118,6 +118,7 @@ data class Category(
 
 @Serializable
 data class ProductCart(
+    val id: String? = null,
     val name: String,
     val pictureUrl: String? = null,
     val barcode: String? = null,
@@ -125,7 +126,6 @@ data class ProductCart(
     val expireDate: ExpireDate,
     val cat: List<Category> = emptyList(),
     val catParents: List<Category> = emptyList(),
-    val cartId: String? = null,
 ) : NoExpModel() {
     fun expireInDays(now: Long = System.currentTimeMillis()) =
         when (expireDate) {

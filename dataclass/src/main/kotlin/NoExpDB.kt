@@ -59,6 +59,7 @@ sealed class NoExpDBModel {
 
     @Serializable
     data class ProductCartDao(
+        val id: String? = null,
         val name: String? = null,
         val pictureUrl: String? = null,
         val barcode: String? = null,
