@@ -46,6 +46,7 @@ sealed class NoExpDBModel {
             "qr" to qr,
             "insertDate" to insertDate,
             "expireDate" to expireDate,
+            "expireDateType" to expireDateType,
             "lastCheckDate" to lastCheckDate,
             "cat" to cat,
             "catParents" to catParents,
@@ -77,6 +78,7 @@ sealed class NoExpDBModel {
             "barcode" to barcode,
             "insertDate" to insertDate,
             "expireDate" to expireDate,
+            "expireDateType" to expireDateType,
             "cat" to cat,
             "catParents" to catParents,
         )
