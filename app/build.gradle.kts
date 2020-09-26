@@ -9,6 +9,8 @@ repositories {
 dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.squareup.okhttp3:okhttp:4.4.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
+
     implementation(project(":categories-parser"))
     api(project(":dataclass"))
 }

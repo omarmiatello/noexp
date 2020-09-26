@@ -2,9 +2,8 @@ package com.github.omarmiatello.noexp
 
 import com.github.omarmiatello.noexp.utils.*
 
-
 fun main() {
-    val isProduction = true
+    val isProduction = false
 
     val settings = cache("settings.json") { Settings() }
 
@@ -16,6 +15,15 @@ fun main() {
         val noExp = ExternalData.getNoExp(settings.db_url, forceUpdate = true)
         categories = categories.updateQuantity(noExp)
         updateDB(noExp, categories, forceUpdate = true)
+    }
+
+    cacheText("sample.kt", forceUpdate = false) {
+        """import com.github.omarmiatello.noexp.NoExpDB
+import com.github.omarmiatello.noexp.NoExpDBModel.*
+
+object Sample {
+    val noExp: NoExpDB = ${noexp.toConstructorString()}
+}"""
     }
 
     if (isProduction) {
