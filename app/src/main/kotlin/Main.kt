@@ -30,7 +30,7 @@ object SampleDb {
         ExternalData.setNoExp(settings.db_url, noexp.toJson())
     }
 
-    val products = noexp.home.orEmpty().values.map { it.toProduct(categories.associateBy { it.name }) }
+    val products = noexp.home.orEmpty().values.map { it.toProductQr(categories.associateBy { it.name }) }
 
     NoExpCategoriesParser.save(categoriesFile, categories, products)
 

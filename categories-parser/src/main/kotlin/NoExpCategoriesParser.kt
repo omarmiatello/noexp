@@ -43,7 +43,7 @@ object NoExpCategoriesParser {
         return categories
     }
 
-    fun save(file: File, categories: List<Category>, products: List<Product>) =
+    fun save(file: File, categories: List<Category>, products: List<ProductHome>) =
         file.writeText(categories.toFormattedString(products))
 
     private fun String.toCategoryLine(): CategoryLine {
@@ -67,7 +67,7 @@ object NoExpCategoriesParser {
         )
     }
 
-    private fun List<Category>.toFormattedString(products: List<Product>) = buildString {
+    private fun List<Category>.toFormattedString(products: List<ProductHome>) = buildString {
         append("--==[ Categories ]==--".padEnd(40))
         appendLine(" | current | quantity | week | year | alias")
         this@toFormattedString.forEach { category ->

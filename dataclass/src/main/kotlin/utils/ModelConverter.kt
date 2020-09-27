@@ -29,14 +29,9 @@ fun ExpireDate.toExpireDateDao() = when (this) {
 
 // DB -> App models
 
-fun NoExpDB.toProductsAndCategories(): Pair<List<Product>, List<Category>> {
-    val categoriesMap = category.orEmpty().mapValues { it.value.toCategory() }
-    return home.orEmpty().values.map { it.toProduct(categoriesMap) } to categoriesMap.values.toList()
-}
-
-fun NoExpDBModel.ProductDao.toProduct(categoriesMap: Map<String, Category>): Product {
+fun NoExpDBModel.ProductDao.toProductQr(categoriesMap: Map<String, Category>): ProductQr {
     val categories = cat.orEmpty().map { categoriesMap.getValue(it) }
-    return Product(
+    return ProductQr(
         name = name ?: error("Missing 'name' in $this"),
         pictureUrl = pictureUrl,
         barcode = barcode,
@@ -87,7 +82,7 @@ fun NoExpDBModel.CategoryDao.toQuantityOrNull() =
 
 // App models -> DB
 
-fun Product.toProductDao(): NoExpDBModel.ProductDao {
+fun ProductQr.toProductDao(): NoExpDBModel.ProductDao {
     val (expireDateType, expireDate) = expireDate.toExpireDateDao()
     return NoExpDBModel.ProductDao(
         name = name,
@@ -104,13 +99,13 @@ fun Product.toProductDao(): NoExpDBModel.ProductDao {
     )
 }
 
-fun Product.toBarcodeDao() = NoExpDBModel.BarcodeDao(
+fun ProductQr.toBarcodeDao() = NoExpDBModel.BarcodeDao(
     name = name,
     pictureUrl = pictureUrl,
     barcode = barcode,
 )
 
-fun Product.toArchivedDao(archiveDate: Long = System.currentTimeMillis()): NoExpDBModel.ArchivedDao {
+fun ProductQr.toArchivedDao(archiveDate: Long = System.currentTimeMillis()): NoExpDBModel.ArchivedDao {
     val (expireDateType, expireDate) = expireDate.toExpireDateDao()
     return NoExpDBModel.ArchivedDao(
         barcode = barcode ?: error("Missing 'barcode' in $this"),
@@ -137,7 +132,7 @@ fun ProductCart.toProductCartDao(): NoExpDBModel.ProductCartDao {
     )
 }
 
-fun ProductCart.toProduct(qr: String, lastCheckDate: Long = System.currentTimeMillis()) = Product(
+fun ProductCart.toProductQr(qr: String, lastCheckDate: Long = System.currentTimeMillis()) = ProductQr(
     name = name,
     pictureUrl = pictureUrl,
     barcode = barcode,

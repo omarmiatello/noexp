@@ -1,9 +1,9 @@
 package com.github.omarmiatello.noexp.utils
 
 import com.github.omarmiatello.noexp.Category
-import com.github.omarmiatello.noexp.Product
+import com.github.omarmiatello.noexp.ProductHome
 
-fun productsInHome(categories: List<Category>, products: List<Product>) = buildString {
+fun productsInHome(categories: List<Category>, products: List<ProductHome>) = buildString {
     categories
         .withProducts(products, categoryWithNoProducts = true)
         .forEach { categoryProducts ->
@@ -23,10 +23,10 @@ fun productsInHome(categories: List<Category>, products: List<Product>) = buildS
                 append(" (${productsInCategory.expiresFormatted()})")
                 val tab2 = (category.allParents + "").joinToString("") { "\t" }
                 productsInCategory.groupBy { it.name }.forEach { (_, prods) ->
-                    appendln()
+                    appendLine()
                     append("$tab2 ${prods.size}x ${prods.first().name} (${prods.expiresFormatted()})")
                 }
             }
-            appendln()
+            appendLine()
         }
 }

@@ -1,7 +1,7 @@
 package com.github.omarmiatello.noexp.utils
 
 import com.github.omarmiatello.noexp.Category
-import com.github.omarmiatello.noexp.Product
+import com.github.omarmiatello.noexp.ProductHome
 
 data class CheckQuantity(
     val category: Category,
@@ -17,7 +17,7 @@ data class CheckQuantity(
     )
 
     data class ForProduct(
-        val product: Product,
+        val product: ProductHome,
         val productsLeft: Int,
         val minDaysForConsume: Int,
         val daysLeft: Int

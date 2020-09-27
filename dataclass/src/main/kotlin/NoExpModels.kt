@@ -57,35 +57,65 @@ data class Quantity(
     }
 }
 
+sealed class ProductHome : NoExpModel() {
+    abstract val name: String
+    abstract val pictureUrl: String?
+    abstract val barcode: String?
+    abstract val insertDate: Long
+    abstract val expireDate: ExpireDate
+    abstract val cat: List<Category>
+    abstract val catParents: List<Category>
+
+    fun expireInDays(now: Long = System.currentTimeMillis()) = expireDate.let {
+        when (it) {
+            is ExpireDate.Real -> DateUtils.millisToDays(it.value, now)
+            is ExpireDate.Estimated -> DateUtils.millisToDays(it.value, now)
+            ExpireDate.NoExpire,
+            ExpireDate.Unknown -> null
+        }
+    }
+
+    fun expireFormatted(now: Long = System.currentTimeMillis()) = expireDate.let {
+        when (it) {
+            is ExpireDate.Real -> DateUtils.formatRelativeShort(it.value, now)
+            is ExpireDate.Estimated -> DateUtils.formatRelativeShort(it.value, now)
+            ExpireDate.NoExpire,
+            ExpireDate.Unknown -> null
+        }
+    }
+}
+
 @Serializable
-data class Product(
-    val name: String,
-    val pictureUrl: String? = null,
-    val barcode: String? = null,
+data class ProductQr(
+    override val name: String,
+    override val pictureUrl: String? = null,
+    override val barcode: String? = null,
+    override val insertDate: Long,
+    override val expireDate: ExpireDate,
+    override val cat: List<Category> = emptyList(),
+    override val catParents: List<Category> = emptyList(),
     val qr: String,
-    val insertDate: Long,
-    val expireDate: ExpireDate,
     val lastCheckDate: Long,
-    val cat: List<Category> = emptyList(),
-    val catParents: List<Category> = emptyList(),
     val position: String? = null,
-) : NoExpModel() {
-    fun expireInDays(now: Long = System.currentTimeMillis()) =
-        when (expireDate) {
-            is ExpireDate.Real -> DateUtils.millisToDays(expireDate.value, now)
-            is ExpireDate.Estimated -> DateUtils.millisToDays(expireDate.value, now)
-            ExpireDate.NoExpire,
-            ExpireDate.Unknown -> null
-        }
+) : ProductHome() {
+    override fun toJson() = json.encodeToString(serializer(), this)
 
-    fun expireFormatted(now: Long = System.currentTimeMillis()) =
-        when (expireDate) {
-            is ExpireDate.Real -> DateUtils.formatRelativeShort(expireDate.value, now)
-            is ExpireDate.Estimated -> DateUtils.formatRelativeShort(expireDate.value, now)
-            ExpireDate.NoExpire,
-            ExpireDate.Unknown -> null
-        }
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
 
+@Serializable
+data class ProductCart(
+    override val name: String,
+    override val pictureUrl: String? = null,
+    override val barcode: String? = null,
+    override val insertDate: Long,
+    override val expireDate: ExpireDate,
+    override val cat: List<Category> = emptyList(),
+    override val catParents: List<Category> = emptyList(),
+    val id: String? = null,
+) : ProductHome() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
     companion object {
@@ -110,40 +140,6 @@ data class Category(
     override fun toJson() = json.encodeToString(serializer(), this)
 
     fun estimateExpireDate(insertDate: Long) = expireDays?.let { insertDate + it.toLong() * 24 * 60 * 60 * 1000 }
-
-    companion object {
-        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
-    }
-}
-
-@Serializable
-data class ProductCart(
-    val id: String? = null,
-    val name: String,
-    val pictureUrl: String? = null,
-    val barcode: String? = null,
-    val insertDate: Long,
-    val expireDate: ExpireDate,
-    val cat: List<Category> = emptyList(),
-    val catParents: List<Category> = emptyList(),
-) : NoExpModel() {
-    fun expireInDays(now: Long = System.currentTimeMillis()) =
-        when (expireDate) {
-            is ExpireDate.Real -> DateUtils.millisToDays(expireDate.value, now)
-            is ExpireDate.Estimated -> DateUtils.millisToDays(expireDate.value, now)
-            ExpireDate.NoExpire,
-            ExpireDate.Unknown -> null
-        }
-
-    fun expireFormatted(now: Long = System.currentTimeMillis()) =
-        when (expireDate) {
-            is ExpireDate.Real -> DateUtils.formatRelativeShort(expireDate.value, now)
-            is ExpireDate.Estimated -> DateUtils.formatRelativeShort(expireDate.value, now)
-            ExpireDate.NoExpire,
-            ExpireDate.Unknown -> null
-        }
-
-    override fun toJson() = json.encodeToString(serializer(), this)
 
     companion object {
         fun fromJson(string: String) = json.decodeFromString(serializer(), string)
