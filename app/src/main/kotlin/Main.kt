@@ -21,8 +21,8 @@ fun main() {
         """import com.github.omarmiatello.noexp.NoExpDB
 import com.github.omarmiatello.noexp.NoExpDBModel.*
 
-object Sample {
-    val noExp: NoExpDB = ${noexp.toConstructorString()}
+object SampleDb {
+    val noExp: NoExpDB = ${noexp.toConstructorString(maxSample = 10)}
 }"""
     }
 
