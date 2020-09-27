@@ -22,7 +22,7 @@ fun main() {
 import com.github.omarmiatello.noexp.NoExpDBModel.*
 
 object SampleDb {
-    val noExp: NoExpDB = ${noexp.toConstructorString(maxSample = 10)}
+    val noExp: NoExpDB = ${noexp.toConstructorString(maxSample = 5)}
 }"""
     }
 
