@@ -37,10 +37,19 @@ fun String.extractCategories(categories: List<Category>, itemIfEmpty: Category? 
         return null
     }
 
-    val sorted =
-        categories.mapNotNull { category -> findPosition(" ${cleanString()} ", category) }.sortedByDescending { it.second.name }
+    val sorted = categories
+            .mapNotNull { category -> findPosition(" ${cleanString()} ", category) }
+            .sortedByDescending { it.second.name }
             .sortedBy { it.first }.map { it.second }
-    val parents = sorted.flatMap { it.allParents }
+    val parents = sorted.allParentsAsString
     return sorted.filter { it.name !in parents }
         .ifEmpty { if (itemIfEmpty != null) listOf(itemIfEmpty) else emptyList() }
 }
+
+val List<Category>.allParentsAsString
+    get() = flatMap { it.allParents }.distinct()
+
+fun List<Category>.allParents(
+    categoriesMap: Map<String, Category>,
+    default: (String) -> Category = { error("Missing category $it") }
+) = flatMap { it.allParents }.distinct().map { categoriesMap[it] ?: default(it) }

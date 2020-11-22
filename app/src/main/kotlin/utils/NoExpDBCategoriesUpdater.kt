@@ -10,7 +10,7 @@ fun updateDB(noExpDB: NoExpDB, categories: List<Category>, forceUpdate: Boolean)
             val cat = name.extractCategories(categories, itemIfEmpty = categories.first())
             productDao.copy(
                 cat = cat.map { it.name },
-                catParents = cat.flatMap { it.allParents }.distinct()
+                catParents = cat.allParentsAsString
             )
         } else productDao
 
