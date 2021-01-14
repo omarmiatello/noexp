@@ -73,6 +73,7 @@ sealed class NoExpDBModel {
         override fun toJson() = json.encodeToString(serializer(), this)
 
         fun toMap() = mapOf(
+            "id" to id,
             "name" to name,
             "pictureUrl" to pictureUrl,
             "barcode" to barcode,
