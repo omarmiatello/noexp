@@ -107,6 +107,7 @@ data class ProductQr(
 
 @Serializable
 data class ProductCart(
+    val id: String,
     override val name: String,
     override val pictureUrl: String? = null,
     override val barcode: String? = null,
@@ -114,7 +115,6 @@ data class ProductCart(
     override val expireDate: ExpireDate,
     override val cat: List<Category> = emptyList(),
     override val catParents: List<Category> = emptyList(),
-    val id: String? = null,
 ) : ProductHome() {
     override fun toJson() = json.encodeToString(serializer(), this)
 

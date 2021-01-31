@@ -48,7 +48,7 @@ fun NoExpDBModel.ProductDao.toProductQr(categoriesMap: Map<String, Category>): P
 fun NoExpDBModel.ProductCartDao.toProductCart(categoriesMap: Map<String, Category>): ProductCart {
     val categories = cat.orEmpty().map { categoriesMap.getValue(it) }
     return ProductCart(
-        id = id,
+        id = id ?: error("Missing 'id' in $this"),
         name = name ?: error("Missing 'name' in $this"),
         pictureUrl = pictureUrl,
         barcode = barcode,
