@@ -3,7 +3,7 @@ package com.github.omarmiatello.noexp.utils
 data class BarcodeInfo(
     val fullCode: String
 ) {
-    val isInternalCode = fullCode.take(2).toInt() in 20..29
+    val isInternalCode = fullCode.length > 8 && fullCode.take(2).toInt() in 20..29
     val productCode: String
     val price: Int
 
