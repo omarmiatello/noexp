@@ -3,9 +3,11 @@ package com.github.omarmiatello.noexp
 import com.github.omarmiatello.noexp.utils.*
 
 fun main() {
+    println("🏁 Start!")
     val isProduction = false
 
     val settings = cache("settings.json") { Settings() }
+    println("🔧 Setting: $settings")
 
     var categories = cache("parsed-categories.json", forceUpdate = true) {
         NoExpCategoriesParser.parse(categoriesFile)
@@ -27,7 +29,9 @@ object SampleDb {
     }
 
     if (isProduction) {
+        println("🌎 Prepare upload")
         ExternalData.setNoExp(settings.db_url, noexp.toJson())
+        println("🌎 Upload complete")
     }
 
     val products = noexp.home.orEmpty().values.map { it.toProductQr(categories.associateBy { it.name }) }
@@ -39,4 +43,5 @@ object SampleDb {
             categories,
             products.sortedBy { it.expireDate.valueIfRealOrEstimate ?: Long.MAX_VALUE })
     }
+    println("🎉 Finish!")
 }

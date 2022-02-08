@@ -4,9 +4,15 @@ import com.github.omarmiatello.noexp.utils.cacheText
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.time.Duration
 
 object ExternalData {
-    private var client = OkHttpClient()
+    private var client = OkHttpClient.Builder()
+        .callTimeout(Duration.ofSeconds(60))
+        .connectTimeout(Duration.ofSeconds(60))
+        .readTimeout(Duration.ofSeconds(60))
+        .writeTimeout(Duration.ofSeconds(60))
+        .build()
 
     private fun urlGet(url: String) =
         client.newCall(Request.Builder().url(url).build())
